@@ -39,3 +39,7 @@ body, html {
     height: 100%;
     margin: 0 15px;
 }
+
+.site-title {
+    font-family: 'Lobster', cursive;
+}
