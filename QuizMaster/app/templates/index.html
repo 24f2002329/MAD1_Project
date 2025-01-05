@@ -48,22 +48,22 @@
       </nav>
 
 
-    <div class="container-fluid content">
-      <div class="container d-flex justify-content-center align-items-center">
+    <div class="container-fluid p-2 content">
+      <div class="row">
+      <div class="container col-md-6 d-flex justify-content-center align-items-center"">
           <div class="text-center">
-        <h1 class="site-title" style="margin: 10px;">Welcome to QuizMaster!</h1>
-        <p>QuizMaster is a web application that allows you to take quizzes<br> and analyze your overall performance.</p>
+        <h1 class="welcome-line">Welcome to Quiz<img src="{{ url_for('static', filename='img/favicon2.png') }}" class="mx-2" style="border-radius: 1rem 0 0 1rem; height: 50px; width: 50px;" />Master!</h1>
           </div>
       </div>
 
-      <div class="container text-center px-2">
+      <div class="container col-md-6 text-center px-2">
         <h2 class="text-center my-3">Login/Register</h2>
         <div class="row align-items-start">
           <div class="col-12 col-md text-center">
             <div class="student-icon">
               <a href="{{url_for('user.login')}}" class="btn"><i class="fas fa-user"></i></a>
             </div><h3>Student?</h3>
-            <a href="{{url_for('user.login')}}" class="btn btn-primary">
+            <a href="{{url_for('user.login')}}" class="btn btn-primary mx-2 my-2">
               <i class="fas fa-user px-2"></i> Student Login
             </a>
             <a href="{{url_for('user.registration')}}" class="btn btn-primary">
@@ -81,11 +81,12 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
     <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top bg-info">
+    <!-- <footer class="d-flex flex-wrap justify-content-center align-items-center py-3 my-4 border-top bg-info">
       <p class="col-md-4 mb-0 text-muted">Get In Touch <a href="mailto:@24f2002329@ds.study.iitm.ac.in">@24f2002329@ds.study.iitm.ac.in</a></p>
     
       <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
@@ -98,6 +99,32 @@
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Summary</a></li>
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
       </ul>
+    </footer> -->
+    <footer class="footer bg-info">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-4 text-center py-auto my-auto">
+                    <h2><img src="{{ url_for('static', filename='img/favicon2.png') }}" class="me-3" alt="logo" style="border-radius: 1rem 0 0 1rem; height: 50px; width: 50px;" />QuizMaster</h2>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>About Us</h5>
+                    <p>
+                      QuizMaster is a web application 
+                      that allows you to take quizzes
+                      and analyze your overall performance.
+                   </p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li>Email: <a href="mailto:24f2002329@ds.study.iitm.ac.in" style="color: black;">24f2002329@ds.study.iitm.ac.in</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center" >&copy; 2024 QuizMaster. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
 
