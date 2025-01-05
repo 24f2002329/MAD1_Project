@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster</title>
+    <!-- Link Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon2.ico') }}" type="image/x-icon">
+
+    <!-- Link Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="static/css/bootstrap.min.css">  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Link Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> 
+
+    <!-- icons font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              <div class="alert-container">
+                  {% for category, message in messages %}
+                      <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                          {{ message }}
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                  {% endfor %}
+              </div>
+          {% endif %}
+      {% endwith %}
+  </div>
+</head>
+<body>
+    <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-info">
+        <div class="container-fluid">
+          <a class="navbar-brand site-title" href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" width="30" height="30">QuizMaster</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{ url_for('user.dashboard')}}"><i class="fas fa-home px-2"></i>Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user.scores') }}"><i class="fas fa-star px-2"></i>Scores</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user.summary') }}"><i class="fas fa-clipboard px-2"></i>Summary</a>
+              </li>
+              {% if session.get('user_id') %}
+                <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout<i class="fas fa-sign-out-alt px-2"></i></a>
+                </li>
+              {% endif %}
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-dark" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      {% block title %}{% endblock %}
+    </header>
+
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <!-- --------------------------------------------------------------------------------------------------------------- -->
+
+    <footer class="footer bg-info">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-4 text-center py-auto my-auto">
+                    <h2><img src="{{ url_for('static', filename='img/favicon2.png') }}" class="me-3" alt="logo" style="border-radius: 1rem 0 0 1rem; height: 50px; width: 50px;" />QuizMaster</h2>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>About Us</h5>
+                    <p>
+                      QuizMaster is a web application 
+                      that allows you to take quizzes
+                      and analyze your overall performance.
+                   </p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li>Email: <a href="mailto:24f2002329@ds.study.iitm.ac.in" style="color: black;">24f2002329@ds.study.iitm.ac.in</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center" >&copy; 2024 QuizMaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Link Bootstrap JS -->
+    <!-- <script src="static/js/bootstrap.min.js"></script> -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

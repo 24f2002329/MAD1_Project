@@ -1,53 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizMaster</title>
-    <!-- Link Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='img/favicon2.ico') }}" type="image/x-icon">
-
-    <!-- Link Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="static/css/bootstrap.min.css">  -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-
-    <!-- Link Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> 
-
-    <!-- icons font-awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-info">
-        <div class="container-fluid">
-          <a class="navbar-brand site-title" href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" width="30" height="30">QuizMaster</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#"><i class="fas fa-home px-2"></i>Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="scores.html"><i class="fas fa-book px-2"></i>Scores</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="summary.html"><i class="fas fa-clipboard px-2"></i>Summary</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{{url_for('user.logout')}}">Logout<i class="fas fa-sign-out-alt px-2"></i></a>
-              </li>
-            </ul>
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-dark" type="submit">Search</button>
-            </form>
-          </div>
-        </div>
-      </nav>
-
-
+{% extends "base.html" %}
+{% block content %}
     <div class="container-fluid p-2 content">
       <div class="row">
       <div class="container col-md-6 d-flex justify-content-center align-items-center"">
@@ -61,21 +13,21 @@
         <div class="row align-items-start">
           <div class="col-12 col-md text-center">
             <div class="student-icon">
-              <a href="{{url_for('user.login')}}" class="btn"><i class="fas fa-user"></i></a>
+              <a href="{{url_for('auth.user_login')}}" class="btn"><i class="fas fa-user"></i></a>
             </div><h3>Student?</h3>
-            <a href="{{url_for('user.login')}}" class="btn btn-primary mx-2 my-2">
+            <a href="{{url_for('auth.user_login')}}" class="btn btn-primary mx-2 my-2">
               <i class="fas fa-user px-2"></i> Student Login
             </a>
-            <a href="{{url_for('user.registration')}}" class="btn btn-primary">
+            <a href="{{url_for('auth.register')}}" class="btn btn-primary">
               <i class="fas fa-user-plus px-2"></i>Student Registration
             </a>
           </div>
           <div class="d-none d-md-block divider"></div>
           <div class="col-12 col-md text-center py-5">
             <div class="admin-icon">
-              <a href="{{url_for('user.admin_login')}}" class="btn"><i class="fas fa-user-shield"></i></a>
+              <a href="{{url_for('admin.login')}}" class="btn"><i class="fas fa-user-shield"></i></a>
             </div><br>
-            <a href="{{url_for('user.admin_login')}}" class="btn btn-danger py-auto my-3">
+            <a href="{{url_for('admin.login')}}" class="btn btn-danger py-auto my-3">
               <i class="fas fa-user-shield px-2"></i> Admin Login
             </a>
           </div>
@@ -83,66 +35,4 @@
       </div>
       </div>
     </div>
-    <!-- --------------------------------------------------------------------------------------------------------------- -->
-
-
-    <!-- <footer class="d-flex flex-wrap justify-content-center align-items-center py-3 my-4 border-top bg-info">
-      <p class="col-md-4 mb-0 text-muted">Get In Touch <a href="mailto:@24f2002329@ds.study.iitm.ac.in">@24f2002329@ds.study.iitm.ac.in</a></p>
-    
-      <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-      </a>
-    
-      <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Scores</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Summary</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
-      </ul>
-    </footer> -->
-    <footer class="footer bg-info">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-md-4 text-center py-auto my-auto">
-                    <h2><img src="{{ url_for('static', filename='img/favicon2.png') }}" class="me-3" alt="logo" style="border-radius: 1rem 0 0 1rem; height: 50px; width: 50px;" />QuizMaster</h2>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h5>About Us</h5>
-                    <p>
-                      QuizMaster is a web application 
-                      that allows you to take quizzes
-                      and analyze your overall performance.
-                   </p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h5>Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li>Email: <a href="mailto:24f2002329@ds.study.iitm.ac.in" style="color: black;">24f2002329@ds.study.iitm.ac.in</a></li>
-                    </ul>
-                </div>
-            </div>
-            <hr>
-            <p class="text-center" >&copy; 2024 QuizMaster. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-
-
-
-    
-
-    <!-- ----------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-
-
-
-
-    <!-- ----------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-
-    <!-- Link Bootstrap JS -->
-    <!-- <script src="static/js/bootstrap.min.js"></script> -->
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+{% endblock %}

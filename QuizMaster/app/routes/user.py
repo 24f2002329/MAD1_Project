@@ -1,40 +1,40 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, render_template, session, redirect, url_for, request, flash
 
-user = Blueprint('user', __name__)
+user_blueprint = Blueprint('user', __name__, url_prefix='/user')
 
-@user.route('/')
-def home():
-    return render_template('index.html')
+@user_blueprint.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return render_template('index.html')
+    
+    return render_template('user_dashboard.html', username=session['username'])
 
-@user.route('/login')
-def login():
-    return render_template('login.html')
+@user_blueprint.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.user_login'))
 
-@user.route('/scores')
+    return render_template('profile.html', username=session['username'])
+
+@user_blueprint.route('/scores' , methods=['GET', 'POST'])
 def scores():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.user_login'))
+
+    if request.method == 'POST':
+        # Save scores
+        pass
+
     return render_template('scores.html')
 
-@user.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('user.home'))
-
-@user.route('/summary')
+@user_blueprint.route('/summary' , methods=['GET', 'POST'])
 def summary():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.user_login'))
+
+    if request.method == 'POST':
+        # Save summary
+        pass
+
     return render_template('summary.html')
 
-@user.route('/registration')
-def registration():
-    return render_template('registration.html')
-
-@user.route('/forgot_username_password')
-def forgot_username_password():
-    return render_template('forgot_username_password.html')
-
-@user.route('/admin_login')
-def admin_login():
-    return render_template('admin_login.html')
-
-@user.route('/admin_home')
-def admin_home():
-    return render_template('admin_home.html')
