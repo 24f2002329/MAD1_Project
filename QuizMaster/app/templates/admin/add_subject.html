@@ -18,17 +18,25 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Subject Name</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for subject in subjects %}
                         <tr>
-                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ loop.index }}</td>
                             <td>{{ subject.name }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_subject', subject_id=subject.id) }}" class="btn btn-primary">Edit</a>
+                                <a href="{{ url_for('admin.delete_subject', subject_id=subject.id) }}" class="btn btn-danger">Delete</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                <div class="text-center">
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
+                </div>
                 </div>
             </div>
         </div>

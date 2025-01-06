@@ -4,9 +4,18 @@ from datetime import datetime
 
 user_blueprint = Blueprint('user', __name__, url_prefix='/user')
 
+
+@user_blueprint.route('/')
+def index():
+    if 'user_id' in session:
+        return redirect(url_for('user.dashboard'))
+    return render_template('index.html')
+
+
+
 @user_blueprint.route('/dashboard')
 def dashboard():
-    if 'user_id' not in session:
+    if 'user_id' not in session or session['user_id'] == 0:
         return render_template('index.html')
     
     return render_template('user/user_dashboard.html', username=session['username'])

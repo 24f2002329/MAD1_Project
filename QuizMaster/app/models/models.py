@@ -1,8 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from datetime import datetime
+from app import db
 # from werkzeug.security import generate_password_hash, check_password_hash
 
-db = SQLAlchemy()
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,12 +35,16 @@ class Chapter(db.Model):
 
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    quiz_chapter = db.Column(db.String(100), nullable=False)
+    quiz_date = db.Column(db.DateTime, nullable=True)
+    duration = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(20), default='pending')
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
     text = db.Column(db.String(500), nullable=False)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     option_a = db.Column(db.String(200), nullable=False)

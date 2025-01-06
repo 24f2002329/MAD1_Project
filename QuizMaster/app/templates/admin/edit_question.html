@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-90 content">
+    <div class="container text-center">
+        <div class="row">
+            <h1>Edit Question</h1>
+            <div class="col-md-6 mx-auto">
+                <div class="card mx-2 my-2 px-2 py-2 shadow ">
+                    <div class="card-body">
+                        <form action="{{ url_for('admin.edit_question', question_id=question.id) }}" method="POST">
+                            <div class="form-group">
+                                <label for="question">Question</label>
+                                <input type="text" class="form-control" id="question" name="question" value="{{ question.title }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="option1">Option 1</label>
+                                <input type="text" class="form-control" id="option1" name="option1" value="{{ question.option1 }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="option2">Option 2</label>
+                                <input type="text" class="form-control" id="option2" name="option2" value="{{ question.option2 }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="option3">Option 3</label>
+                                <input type="text" class="form-control" id="option3" name="option3" value="{{ question.option3 }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="option4">Option 4</label>
+                                <input type="text" class="form-control" id="option4" name="option4" value="{{ question.option4 }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="correct_option">Correct Option</label>
+                                <input type="text" class="form-control" id="correct_option" name="correct_option" value="{{ question.correct_option }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

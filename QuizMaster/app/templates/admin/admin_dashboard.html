@@ -6,7 +6,7 @@
             <h1>Admin Dashboard</h1>
             {% for subject in subjects %}
             <div class="col-md-6">
-                <div class="card mx-2 my-2 px-2 py-2">
+                <div class="card mx-2 my-2 px-2 py-2 shadow ">
                     <div class="card-body">
                         <h5 class="card-title">{{ subject.name }}</h5>
                         <table class="table table-striped">
@@ -25,8 +25,8 @@
                                     <td>{{ chapter.name }}</td>
                                     <td>{{ chapter.quizzes|length }}</td>
                                     <td>
-                                        <a class="btn btn-warning btn-sm mx-1" href="admin.add_question">Edit</a>
-                                        <a class="btn btn-danger btn-sm mx-1">Delete</a>
+                                        <a class="btn btn-warning btn-sm mx-1" href="{{ url_for('admin.edit_chapter', chapter_id=chapter.id) }}">Edit</a>
+                                        <a class="btn btn-danger btn-sm mx-1" href="{{ url_for('admin.delete_chapter', chapter_id=chapter.id) }}">Delete</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -40,7 +40,8 @@
         </div>
     </div>
     <div class="container text-center">
-            <a href="{{ url_for('admin.add_subject') }}" class="btn btn-primary add-subject-btn btn-lg"><i class="fas fa-plus px-2"></i>Add Subjects</a>
+            <a href="{{ url_for('admin.add_subject') }}" class="btn btn-primary add-subject-btn btn-lg mb-2"><i class="fas fa-plus px-2"></i>Add/Manage Subjects</a>
     </div>
 </section>
+
 {% endblock %}

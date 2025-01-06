@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center mb-4 mt-4">Edit Subject</h1>
+                <form action="{{ url_for('admin.edit_subject', subject_id=subject.id) }}" method="POST">
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="subject_name">Subject Name:</label>
+                        <input type="text" id="subject_name" name="subject_name" class="form-control form-control-lg bg-light" value="{{ subject.name }}" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary my-2 py-auto">Change Subject Name</button>
+                </form>
+                <div>
+                    <h4 class="mx-2 my-4">Chapters in {{ subject.name }}</h4>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Chapter ID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for chapter in chapters %}
+                            <tr>
+                                <td>{{ chapter.id }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.edit_chapter', chapter_id=chapter.id) }}" class="btn btn-primary">Edit</a>
+                                    <a href="{{ url_for('admin.delete_chapter', chapter_id=chapter.id) }}" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        {% endblock %}

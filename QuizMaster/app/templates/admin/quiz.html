@@ -1,6 +1,48 @@
 {% extends "base.html" %}
-{% block title %}Quiz{% endblock %}
 {% block content %}
+<section class="vh-90 content">
+    <div class="container text-center">
+        <div class="row">
+            <h1>Admin Dashboard</h1>
+            {% for quiz in quizzes %}
+            <div class="col-md-6">
+                <div class="card mx-2 my-2 px-2 py-2 shadow ">
+                    <div class="card-body">
+                        <h5 class="card-title">Quiz {{ quiz.id }} ({{ quiz.quiz_chapter}})</h5>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Ques. ID</th>
+                                    <th scope="col">Ques. Title</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for question in quiz.questions %}
+                                <tr>
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <td>{{ question.id }}</td>
+                                    <td>{{ question.title }}</td>
+                                    <td>{{ quiz.questions|length }}</td>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm mx-1" href="{{ url_for('admin.edit_question', question_id=question.id) }}">Edit</a>
+                                        <a class="btn btn-danger btn-sm mx-1" href="{{ url_for('admin.delete_question', question_id=question.id) }}">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" class="btn btn-outline-primary btn-sm"><i class="fas fa-plus px-2">Add Question</i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container text-center">
+            <a href="{{url_for('admin.create_quiz')}}" class="btn btn-primary create-quiz-btn btn-lg mb-2"><i class="fas fa-plus px-2"></i>Create Quiz</a>
+    </div>
+</section>
 
-<p>Hi</p>
 {% endblock %}

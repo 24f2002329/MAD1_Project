@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-90 content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center mb-4 mt-4">Create Quiz</h1>
+                <form method="POST" action="{{ url_for('admin.create_quiz') }}">
+                    <div class="form-group form-outline mb-4">
+                        <label for="chapter">Chapter</label>
+                        <select class="form-control" id="chapter" name="chapter" required>
+                            {% for chapter in chapters %}
+                                <option value="{{ chapter.name }}">{{ chapter.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group form-outline mb-4">
+                        <label for="quiz_date">Quiz Date</label>
+                        <input type="date" class="form-control" id="quiz_date" name="quiz_date" required>
+                    </div>
+                    <div class="form-group form-outline mb-4">
+                        <label for="quiz_duration">Quiz Duration (minutes)</label>
+                        <input type="number" class="form-control" id="quiz_duration" name="quiz_duration" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Quiz</button>
+                </form>
+                <div class="text-center">
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
