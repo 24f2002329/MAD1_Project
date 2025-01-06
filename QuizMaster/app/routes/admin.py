@@ -15,7 +15,7 @@ def login():
         hardcoded_password = 'devendra'  # In a real application, use a hashed password
         
         if username == hardcoded_username and password == hardcoded_password:
-            session['user_id'] = 1  # Assuming the admin user ID is 1
+            session['user_id'] = 0  # Assuming the admin user ID is 0
             session['role'] = 'admin'
             session['username'] = hardcoded_username
             flash('Login successful, Hello Devendra!', 'success')
@@ -24,8 +24,11 @@ def login():
 
     return render_template('admin_login.html')
 
+
+
+
 @admin_blueprint.route('/dashboard')
 def dashboard():
     if session.get('role') != 'admin':
         return "Unauthorized", 403
-    return render_template('admin_dashboard.html')
+    return render_template('admin/admin_dashboard.html')

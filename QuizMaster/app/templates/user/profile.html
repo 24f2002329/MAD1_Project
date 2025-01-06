@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white text-center">
+                    <h4>User Profile</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Full Name:</strong> {{ user.full_name or 'N/A' }}</p>
+                    <p><strong>Date of Birth:</strong> {{ user.dob.strftime('%d %B %Y') if user.dob else 'N/A' }}</p>
+                    <p><strong>Role:</strong> {{ user.role or 'User' }}</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{{ url_for('user.settings') }}" class="btn btn-primary">Edit Profile</a>
+                    <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
