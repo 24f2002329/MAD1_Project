@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center mb-4 mt-4">Add Chapter to {{ subject.name }}</h1>
+                <form action="{{ url_for('admin.add_chapter', subject_id=subject.id) }}" method="POST">
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="chapter">Chapter Name:</label>
+                        <input type="text" id="chapter" name="chapter" class="form-control form-control-lg" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary my-2 py-auto">Add Chapter</button>
+                </form>
+                <h3 class="text-center my-4">Already Listed Chapters</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Chapter Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for chapter in chapters %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ chapter.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="text-center">
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

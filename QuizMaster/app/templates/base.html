@@ -36,8 +36,43 @@
 <body>
     <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-info">
-        <div class="container-fluid">
-          <a class="navbar-brand site-title" href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" width="30" height="30">QuizMaster</a>
+        <div class="container-fluid"> 
+              {% if session['user_id'] == 0 %}
+          <a class="navbar-brand site-title" href="{{ url_for('admin.dashboard')}}"><img src="{{ url_for('static', filename='img/logo.png') }}" width="30" height="30">QuizMaster</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{ url_for('admin.dashboard')}}"><i class="fas fa-home px-2"></i>Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.quiz') }}"><i class="fas fa-star px-2"></i>Quiz</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.summary') }}"><i class="fas fa-clipboard px-2"></i>Summary</a>
+              </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.logout') }}">Logout<i class="fas fa-sign-out-alt px-2"></i></a>
+                </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-dark" type="submit">Search</button>
+            </form>
+            <!-- Admin Profile Dropdown -->
+            <div class="dropdown mx-2">
+              <a class="nav-link dropdown-toggle text-dark mx-auto px-auto" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle fa-lg px-2"></i> Welcome Admin
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                  <li><a class="dropdown-item" href="{{ url_for('admin.logout') }}">Logout</a></li>
+              </ul>
+          </div>
+          </div>
+              {% else %}
+          <a class="navbar-brand site-title" href="{{ url_for('user.dashboard')}}"><img src="{{ url_for('static', filename='img/logo.png') }}" width="30" height="30">QuizMaster</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -52,47 +87,35 @@
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('user.summary') }}"><i class="fas fa-clipboard px-2"></i>Summary</a>
               </li>
-              {% if session.get('user_id') %}
+                {% if session.get('user_id') %}
                 <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout<i class="fas fa-sign-out-alt px-2"></i></a>
                 </li>
-              {% endif %}
-              
+                {% endif %}
             </ul>
             <form class="d-flex">
               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-dark" type="submit">Search</button>
             </form>
-            {% if session.get('user_id') is not none %}
-                    {% if session['user_id'] == 0 %}
-                        <!-- Admin Profile Dropdown -->
-                        <div class="dropdown mx-2">
-                          <a class="nav-link dropdown-toggle text-dark" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-user-circle fa-lg"></i>Admin
-                          </a>
-                          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                              <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                          </ul>
-                      </div>
-                    {% else %}
-                        <!-- User Profile Dropdown -->
-                        <div class="dropdown mx-2">
-                          <a class="nav-link dropdown-toggle text-dark" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-user-circle fa-lg"></i> {{ session.get('username') or 'Profile' }}
-                          </a>
-                          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                              <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">View Profile</a></li>
-                              <li><a class="dropdown-item" href="{{ url_for('user.settings') }}">Settings</a></li>
-                              <li><hr class="dropdown-divider"></li>
-                              <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                          </ul>
-                      </div>
-                    {% endif %}
+                {% if session.get('user_id') %}
+            <!-- User Profile Dropdown -->  
+            <div class="dropdown mx-2">  
+              <a class="nav-link dropdown-toggle text-dark mx-auto px-auto" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle fa-lg px-2"></i>Welcome, {{ session.get('full_name') or 'Profile' }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                  <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">View Profile</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('user.settings') }}">Settings</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+              </ul>
+            </div>
                 {% endif %}
+          {% endif %}
           </div>
         </div>
       </nav>
-      {% block title %}{% endblock %}
+      <!-- {% block title %}{% endblock %} -->
     </header>
 
 

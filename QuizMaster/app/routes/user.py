@@ -21,7 +21,7 @@ def scores():
         # Save scores
         pass
 
-    return render_template('scores.html')
+    return render_template('user/scores.html')
 
 @user_blueprint.route('/summary' , methods=['GET', 'POST'])
 def summary():
@@ -32,7 +32,7 @@ def summary():
         # Save summary
         pass
 
-    return render_template('summary.html')
+    return render_template('user/summary.html')
 
 
 @user_blueprint.route('/profile', methods=['GET'])

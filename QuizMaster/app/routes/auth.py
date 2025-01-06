@@ -55,7 +55,8 @@ def user_login():
             # Store user details in session
             session['user_id'] = user.id
             session['role'] = user.role
-            session['username'] = user.username    
+            session['username'] = user.username  
+            session['full_name'] = user.full_name
             # flash('Login successful!', 'success')
             return redirect(url_for('user.dashboard'))  # Adjust 'user.dashboard' to your actual route
         

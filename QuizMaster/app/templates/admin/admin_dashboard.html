@@ -1,8 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Welcome, {{ username }}</h1>
-<ul>
-    <li><a href="{{ url_for('user.scores') }}">View Scores</a></li>
-    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-</ul>
+<section class="vh-90 content">
+    <div class="container text-center">
+        <div class="row">
+            <h1>Admin Dashboard</h1>
+            {% for subject in subjects %}
+            <div class="col-md-6">
+                <div class="card mx-2 my-2 px-2 py-2">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ subject.name }}</h5>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Chapter Name</th>
+                                    <th scope="col">No. of Quizzes</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for chapter in subject.chapters %}
+                                <tr>
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <td>{{ chapter.name }}</td>
+                                    <td>{{ chapter.quizzes|length }}</td>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm mx-1" href="admin.add_question">Edit</a>
+                                        <a class="btn btn-danger btn-sm mx-1">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{{ url_for('admin.add_chapter', subject_id=subject.id) }}" class="btn btn-outline-primary btn-sm"><i class="fas fa-plus px-2">Add Chapter...</i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container text-center">
+            <a href="{{ url_for('admin.add_subject') }}" class="btn btn-primary add-subject-btn btn-lg"><i class="fas fa-plus px-2"></i>Add Subjects</a>
+    </div>
+</section>
 {% endblock %}

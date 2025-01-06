@@ -29,12 +29,9 @@ def create_app():
     @app.route('/')
     def home():
         return render_template('index.html')
-    
 
     login_manager = LoginManager()
     login_manager.init_app(app)
-
-    from .models.models import User
 
     @login_manager.user_loader
     def load_user(user_id):

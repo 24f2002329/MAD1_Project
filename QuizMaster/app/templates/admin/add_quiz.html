@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center mb-4 mt-4">Add Quiz to {{ chapter.name }}</h1>
+                <form action="{{ url_for('admin.add_quiz', chapter_id=chapter.id) }}" method="POST">
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="quiz">Quiz Name:</label>
+                        <input type="text" id="quiz" name="quiz" class="form-control form-control-lg" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary my-2 py-auto">Add Quiz</button>
+                </form>
+                <h3 class="text-center my-4">Already Listed Quizzes</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Quiz Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quiz in quizzes %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ quiz.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

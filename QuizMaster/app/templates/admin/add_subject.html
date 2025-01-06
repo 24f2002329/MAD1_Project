@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center mb-4 mt-4">Create New Subject</h1>
+                <form action="{{ url_for('admin.add_subject') }}" method="POST">
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="subject">Subject Name:</label>
+                        <input type="text" id="subject" name="subject" class="form-control form-control-lg" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary my-2 py-auto">Create</button>
+                </form>
+                <h3 class="text-center my-4">Already Listed Subjects</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Subject Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject in subjects %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ subject.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>">
+{% endblock %}
