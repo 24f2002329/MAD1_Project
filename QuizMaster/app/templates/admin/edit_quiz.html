@@ -27,12 +27,12 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg btn-block">Save Changes</button>
                         </form>
-                        <div>
+                        <div">
                             <h4 class="mx-2 my-4">Questions in Quiz {{ quiz.id }}</h4>
                             <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        ]<th>#</th>
+                                        <th>#</th>
                                         <th>Question ID</th>
                                         <th>Question Title</th>
                                         <th>Action</th>
@@ -45,7 +45,7 @@
                                         <td>{{ question.id }}</td>
                                         <td>{{ question.title }}</td>
                                         <td>
-                                            <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-primary">Edit</a>
+                                            <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-primary my-2">Edit</a>
                                             <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger">Delete</a>
                                         </td>
                                     </tr>

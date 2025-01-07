@@ -17,7 +17,7 @@ def create_app():
     app.config['SECRET_KEY'] = "quizmaster"
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_NAME}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)  # Set session timeout to 10 minutes
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Set session timeout to 10 minutes
 
 
     @app.before_request

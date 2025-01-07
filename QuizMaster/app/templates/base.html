@@ -62,7 +62,7 @@
               <button class="btn btn-outline-dark" type="submit">Search</button>
             </form>
             <!-- Admin Profile Dropdown -->
-            <div class="dropdown mx-2">
+            <div class="dropdown mx-2 my-3">
               <a class="nav-link dropdown-toggle text-dark mx-auto px-auto" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-user-circle fa-lg px-2"></i> Welcome Admin
               </a>
@@ -99,7 +99,7 @@
             </form>
                 {% if session.get('user_id') %}
             <!-- User Profile Dropdown -->  
-            <div class="dropdown mx-2">  
+            <div class="dropdown mx-2 my-3">  
               <a class="nav-link dropdown-toggle text-dark mx-auto px-auto" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-user-circle fa-lg px-2"></i>Welcome, {{ session.get('full_name') or 'Profile' }}
               </a>
@@ -162,7 +162,7 @@
 
     <script>
       // Session timeout duration (in milliseconds, matches server-side setting)
-      const sessionTimeout = 10 * 60 * 1000; // 10 minutes
+      const sessionTimeout = 30 * 60 * 1000; // 10 minutes
       const warningDuration = 5 * 60 * 1000; // Optional: 5 minutes before timeout
   
       let timeout; // Timeout for redirection

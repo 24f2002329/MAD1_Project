@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="content">
-    <div class="container">
+<section class="vh-90 content">
+    <div class="container text-center">
+        <div class="row">
         <h1 class="text-center mb-4">Add Question to {{ quiz.id }} ({{chapter}})</h1>
+        <div class="col-md-6 mx-auto">
+            <div class="card mx-2 my-2 px-2 py-2 shadow ">
+                <div class="card-body">
         <form action="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" method="POST">
             <div class="form-outline mb-4">
                 <label for="question_title">Question Title:</label>
@@ -37,15 +41,15 @@
             </div>
             <div class="form-outline mb-4">
                 <label for="correct_options">Correct Options [comma separated e.g. 1 or 1,2]:</label>
-                <input type="text" id="correct_options" name="correct_options" class="form-control" />
+                <input type="text" id="correct_options" name="correct_options" class="form-control"required />
             </div>
             <div class="form-outline mb-4">
                 <label for="marks">Marks:</label>
-                <input type="number" id="marks" name="marks" class="form-control" />
+                <input type="number" id="marks" name="marks" class="form-control" value="4" required/>
             </div>
             <div class="form-outline mb-4">
                 <label for="negative_marks">Negative Marks [Enter a positive value]:</label>
-                <input type="number" id="negative_marks" name="negative_marks" class="form-control" />
+                <input type="number" id="negative_marks" name="negative_marks" class="form-control" value="0" required/>
             </div>
             <button type="submit" class="btn btn-primary">Add Question</button>
         </form>
@@ -65,7 +69,7 @@
                     <td>{{ loop.index }}</td>
                     <td>{{ question.title }}</td>
                     <td>
-                        <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-warning">Edit/View</a>
+                        <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-warning my-2">Edit/View</a>
                         <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
@@ -75,6 +79,9 @@
         <div class="text-center">
             <button onclick="history.back()" class="btn btn-secondary mt-3 mb-4">Back</button>
         </div>
+        </div>
+    </div>
+    </div>
     </div>
 </section>
 {% endblock %}

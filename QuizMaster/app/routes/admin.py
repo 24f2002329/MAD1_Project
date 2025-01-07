@@ -269,7 +269,7 @@ def add_question(quiz_id):
         option3 = request.form.get('option3')
         option4 = request.form.get('option4')
         marks = int(request.form.get('marks'))
-        correct_option = request.form.get('correct_option')
+        correct_options = request.form.get('correct_options')
         negative_marks = int(request.form.get('negative_marks'))
 
         # Save question to database
@@ -282,7 +282,7 @@ def add_question(quiz_id):
             option2=option2,
             option3=option3,
             option4=option4,
-            correct_options=correct_option,
+            correct_options=correct_options,
             marks=marks,
             negative_marks=negative_marks
         )
@@ -345,5 +345,6 @@ def edit_subject(subject_id):
         flash('Subject updated successfully.', 'success')
         return redirect(url_for('admin.dashboard'))
     
-    return render_template('admin/edit_subject.html', subject=subject)
+    chapters = Chapter.query.filter_by(subject_id=subject_id).all()
+    return render_template('admin/edit_subject.html', subject=subject , chapters=chapters)
 
