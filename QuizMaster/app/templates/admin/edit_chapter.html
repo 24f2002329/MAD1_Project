@@ -40,12 +40,13 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <a href="{{ url_for('admin.add_quiz', chapter_id=chapter.id) }}" class="btn btn-outline-dark">Add Quiz</a>
                         </div>
                     </div>
                 </div> 
                 <div class="text-center">
-                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
-                </div> 
+                    <button onclick="history.back()" class="btn btn-secondary mt-3 mb-4">Back</button>
+                </div>
             </div>
         </div>
     </div>

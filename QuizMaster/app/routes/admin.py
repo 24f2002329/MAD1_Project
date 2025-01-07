@@ -15,6 +15,9 @@ def index():
 
 @admin_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('user_id') not in [None, 0] or session.get('role') == 'admin':
+        flash('You are already logged in.', 'info')
+        return redirect(url_for('admin.dashboard'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -39,7 +42,9 @@ def login():
 @admin_blueprint.route('/dashboard', methods=['GET'])
 def dashboard():
     if session.get('role') != 'admin':
-        return "Unauthorized", 403
+        flash("Unauthorized", 'error')
+        session.clear()
+        return redirect(url_for('admin.login'))
     subjects = Subject.query.all()
     
     return render_template('admin/admin_dashboard.html', subjects=subjects)
@@ -176,7 +181,7 @@ def create_quiz():
         chapter = request.form['chapter']
         duration = request.form['quiz_duration']
         chapter_id = Chapter.query.filter_by(name=chapter).first().id
-        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration, quiz_chapter=chapter)
+        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration)
         db.session.add(quiz)
         db.session.commit()
         flash('Quiz added successfully.', 'success')
@@ -193,8 +198,18 @@ def add_quiz(chapter_id):
         return "Unauthorized", 403
 
     if request.method == 'POST':
-        name = request.form['quiz']
-        quiz = Quiz(name=name, chapter_id=chapter_id)
+        quiz_date = request.form['quiz_date']
+
+        # Convert quiz_date to datetime object
+        try:
+            quiz_date = datetime.strptime(quiz_date, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Invalid date format!', 'error')
+            return redirect(url_for('admin.add_quiz', chapter_id=chapter_id))
+
+        duration = request.form['quiz_duration']
+        quiz_chapter = Chapter.query.filter_by(id=chapter_id).first().name
+        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration, quiz_chapter=quiz_chapter)
         db.session.add(quiz)
         db.session.commit()
         flash('Quiz added successfully.', 'success')
@@ -234,25 +249,62 @@ def edit_quiz(quiz_id):
         flash('Quiz updated successfully.', 'success')
         return redirect(url_for('admin.edit_chapter', chapter_id=quiz.chapter_id))
     chapters = Chapter.query.all() 
-    return render_template('admin/edit_quiz.html', quiz=quiz, chapters=chapters)
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    return render_template('admin/edit_quiz.html', quiz=quiz, chapters=chapters, questions=questions)
 
 
-@admin_blueprint.route('/add_question/<int:quiz_id>', methods=['GET', 'POST'])
+@admin_blueprint.route('/add-question/<int:quiz_id>', methods=['GET', 'POST'])
 def add_question(quiz_id):
-    if session.get('role') != 'admin':
-        return "Unauthorized", 403
+    quiz = Quiz.query.get_or_404(quiz_id)
 
     if request.method == 'POST':
-        text = request.form['question']
-        question = Question(text=text, quiz_id=quiz_id)
-        db.session.add(question)
+        # Retrieve form data
+        question_title = request.form.get('question_title')
+        question_text = request.form.get('question_text')
+        question_type = request.form.get('question_type')
+        option1 = request.form.get('option1')
+        option2 = request.form.get('option2')
+        option3 = request.form.get('option3')
+        option4 = request.form.get('option4')
+        marks = int(request.form.get('marks'))
+        negative_marks = int(request.form.get('negative_marks'))
+
+        # Handle correct option(s)
+        if question_type == 'MSQ':
+            correct_option = ','.join(request.form.getlist('correct_option'))  # Comma-separated for MSQ
+        else:
+            correct_option = request.form.get('correct_option')
+
+
+        if marks < 0 or negative_marks < 0 or marks < negative_marks:
+            flash('Invalid marks or negative marks values.', 'error')
+            return redirect(url_for('admin.add_question', quiz_id=quiz_id))
+
+        # Save question to database
+        new_question = Question(
+            quiz_id=quiz_id,
+            title=question_title,
+            text=question_text,
+            type=question_type,
+            option1=option1,
+            option2=option2,
+            option3=option3,
+            option4=option4,
+            correct_options=correct_option,
+            marks=marks,
+            negative_marks=negative_marks
+        )
+        db.session.add(new_question)
         db.session.commit()
-        flash('Question added successfully.', 'success')
+
+        flash('Question added successfully!', 'success')
         return redirect(url_for('admin.add_question', quiz_id=quiz_id))
 
-    quiz = Quiz.query.get_or_404(quiz_id)
+    # Retrieve all questions for the quiz
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
-    return render_template('admin/add_question.html', quiz=quiz, questions=questions)
+    chapter = Chapter.query.get_or_404(quiz.chapter_id).name
+    return render_template("admin/add_question.html", quiz=quiz, questions=questions , chapter=chapter)
+
 
 
 @admin_blueprint.route('/delete_question/<int:question_id>')

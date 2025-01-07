@@ -2,37 +2,83 @@
 {% block content %}
 <section class="content">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <h1 class="text-center mb-4 mt-4">Add Question to {{ quiz.name }}</h1>
-                <form action="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" method="POST">
-                    <div class="form-outline mb-4">
-                        <label class="form-label" for="question">Question Text:</label>
-                        <input type="text" id="question" name="question" class="form-control form-control-lg" required />
-                    </div>
-                    <button type="submit" class="btn btn-primary my-2 py-auto">Add Question</button>
-                </form>
-                <h3 class="text-center my-4">Already Listed Questions</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Question Text</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for question in questions %}
-                        <tr>
-                            <th scope="row">{{ loop.index }}</th>
-                            <td>{{ question.text }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <div class="text-center">
-                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
-                </div>
+        <h1 class="text-center mb-4">Add Question to {{ quiz.id }} ({{chapter}})</h1>
+        <form action="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" method="POST">
+            <div class="form-outline mb-4">
+                <label for="question_title">Question Title:</label>
+                <input type="text" id="question_title" name="question_title" class="form-control" required />
             </div>
+            <div class="form-outline mb-4">
+                <label for="question_text">Question Statement:</label>
+                <textarea id="question_text" name="question_text" class="form-control" required></textarea>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="question_type">Type:</label>
+                <select id="question_type" name="question_type" class="form-control" required>
+                    <option value="SCQ">Single Correct Question</option>
+                    <option value="MSQ">Multiple Correct Questions</option>
+                </select>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="option1">Option 1:</label>
+                <input type="text" id="option1" name="option1" class="form-control" required />
+            </div>
+            <div class="form-outline mb-4">
+                <label for="option2">Option 2:</label>
+                <input type="text" id="option2" name="option2" class="form-control" required />
+            </div>
+            <div class="form-outline mb-4">
+                <label for="option3">Option 3:</label>
+                <input type="text" id="option3" name="option3" class="form-control" required />
+            </div>
+            <div class="form-outline mb-4">
+                <label for="option4">Option 4:</label>
+                <input type="text" id="option4" name="option4" class="form-control" required />
+            </div>
+            <div class="form-outline mb-4">
+                <label for="correct_option">Correct Option:</label>
+                <select id="correct_option" name="correct_option" class="form-control" required>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                    <option value="option4">Option 4</option>
+                </select>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="marks">Marks:</label>
+                <input type="number" id="marks" name="marks" class="form-control" />
+            </div>
+            <div class="form-outline mb-4">
+                <label for="negative_marks">Negative Marks:</label>
+                <input type="number" id="negative_marks" name="negative_marks" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Question</button>
+        </form>
+
+        <h2 class="mt-5">Questions in Quiz {{ quiz.id }}</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ question.title }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-warning">Edit/View</a>
+                        <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center">
+            <button onclick="history.back()" class="btn btn-secondary mt-3 mb-4">Back</button>
         </div>
     </div>
 </section>

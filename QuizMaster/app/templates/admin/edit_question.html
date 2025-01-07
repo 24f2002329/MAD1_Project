@@ -9,9 +9,12 @@
                     <div class="card-body">
                         <form action="{{ url_for('admin.edit_question', question_id=question.id) }}" method="POST">
                             <div class="form-group">
-                                <label for="question">Question</label>
+                                <label for="question">Question Title</label>
                                 <input type="text" class="form-control" id="question" name="question" value="{{ question.title }}">
                             </div>
+                            <div class="form-group">
+                                <label for="question_text">Question Statement</label>
+                                <input type="text" class="form-control" id="question_text" name="question_text" value="{{ question.text }}">
                             <div class="form-group">
                                 <label for="option1">Option 1</label>
                                 <input type="text" class="form-control" id="option1" name="option1" value="{{ question.option1 }}">
@@ -30,10 +33,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="correct_option">Correct Option</label>
-                                <input type="text" class="form-control" id="correct_option" name="correct_option" value="{{ question.correct_option }}">
+                                <input type="text" class="form-control" id="correct_option" name="correct_option" value="{{ question.correct_options }}">
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary my-3">Submit</button>
                         </form>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="history.back()" class="btn btn-secondary mt-3 mb-4">Back</button>
                     </div>
                 </div>
             </div>

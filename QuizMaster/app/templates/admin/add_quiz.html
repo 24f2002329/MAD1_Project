@@ -7,8 +7,12 @@
                 <h1 class="text-center mb-4 mt-4">Add Quiz to {{ chapter.name }}</h1>
                 <form action="{{ url_for('admin.add_quiz', chapter_id=chapter.id) }}" method="POST">
                     <div class="form-outline mb-4">
-                        <label class="form-label" for="quiz">Quiz Name:</label>
-                        <input type="text" id="quiz" name="quiz" class="form-control form-control-lg" required />
+                        <label for="quiz_date">Quiz Date</label>
+                        <input type="date" class="form-control" id="quiz_date" name="quiz_date" required>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label for="quiz_duration">Quiz Duration (minutes)</label>
+                        <input type="number" class="form-control" id="quiz_duration" name="quiz_duration" required>
                     </div>
                     <button type="submit" class="btn btn-primary my-2 py-auto">Add Quiz</button>
                 </form>
@@ -17,20 +21,30 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Quiz Name</th>
+                            <th scope="col">Quiz ID</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for quiz in quizzes %}
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
-                            <td>{{ quiz.name }}</td>
+                            <td>{{ quiz.id }}</td>
+                            <td>{{ quiz.duration }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Edit</a>
+                                <a href="{{ url_for('admin.delete_quiz', quiz_id=quiz.id) }}" class="btn btn-danger">Delete</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                <div class="text-center">
+                <!-- <div class="text-center">
                     <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mt-3 mb-4">Back to Dashboard</a>
+                </div> -->
+                <div class="text-center">
+                    <button onclick="history.back()" class="btn btn-secondary mt-3 mb-4">Back</button>
                 </div>
             </div>
         </div>

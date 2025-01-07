@@ -35,22 +35,25 @@ class Chapter(db.Model):
 
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    quiz_chapter = db.Column(db.String(100), nullable=False)
     quiz_date = db.Column(db.DateTime, nullable=True)
     duration = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(20), default='pending')
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
+    chapter = db.relationship('Chapter', backref=db.backref('quizzes', lazy=True))
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     text = db.Column(db.String(500), nullable=False)
+    type = db.Column(db.String(20), nullable=False)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
-    option_a = db.Column(db.String(200), nullable=False)
-    option_b = db.Column(db.String(200), nullable=False)
-    option_c = db.Column(db.String(200), nullable=False)
-    option_d = db.Column(db.String(200), nullable=False)
-    correct_answer = db.Column(db.String(200), nullable=False)
+    option1 = db.Column(db.String(200), nullable=False)
+    option2 = db.Column(db.String(200), nullable=False)
+    option3 = db.Column(db.String(200), nullable=False)
+    option4 = db.Column(db.String(200), nullable=False)
+    correct_options = db.Column(db.String(200), nullable=False)
+    marks = db.Column(db.Integer, nullable=False)
+    negative_marks = db.Column(db.Integer, nullable=False)
 
 

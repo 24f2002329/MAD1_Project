@@ -1,7 +1,7 @@
 from flask import Flask, jsonify ,render_template, redirect, url_for, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
-from flask_migrate import Migrate
+# from flask_migrate import Migrate
 from datetime import timedelta
 
 
@@ -41,7 +41,7 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         db.create_all()
-    migrate = Migrate(app, db)
+    # migrate = Migrate(app, db)
     
 
 
