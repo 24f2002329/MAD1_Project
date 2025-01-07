@@ -57,6 +57,14 @@ def create_app():
         return User.query.get(int(user_id))
 
 
+    @app.template_filter('int_to_time')
+    def int_to_time(minutes):
+        hours = minutes // 60
+        mins = minutes % 60
+        return f"{hours:02}:{mins:02}"
+
+
+
     return app
 
 

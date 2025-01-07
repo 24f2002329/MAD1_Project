@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-90 content">
+    <div class="container d-flex justify-content-center align-items-center mt-5">
+        <div class="card text-center shadow-lg p-4 mb-5 bg-white rounded" style="max-width: 400px; border: 1px solid #ccc;">
+            <div class="card-body">
+                <h2 class="card-title mb-4">View the Quiz</h2>
+                <div class="text-start">
+                    <p class="mb-3"><strong>ID :</strong> {{ quiz.id }}</p>
+                    <p class="mb-3"><strong>Subject :</strong> {{ quiz.chapter.subject.name }}</p>
+                    <p class="mb-3"><strong>Chapter :</strong> {{ quiz.chapter.name }}</p>
+                    <p class="mb-3"><strong>Number of Questions :</strong> {{ quiz.questions|length }}</p>
+                    <p class="mb-3"><strong>Scheduled Date :</strong> {{ quiz.quiz_date.strftime('%d/%m/%Y') }}</p>
+                    <p class="mb-3"><strong>Duration (hh:mm) :</strong> {{ quiz.duration|int_to_time }}</p>
+                </div>
+                <button class="btn btn-primary mt-3 mx-2" onclick="window.history.back()">Close</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

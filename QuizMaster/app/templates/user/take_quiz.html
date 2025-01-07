@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-90 content">
+    <div class="container d-flex justify-content-center align-items-center mt-5">
+        <div class="card text-center shadow-lg p-4 mb-5 bg-white rounded" style="width: 600px; border: 1px solid #ccc;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="badge bg-success text-white py-2 px-3" style="font-size: 1rem;">
+                        QNo. {{ current_question }}/{{ total_questions }}
+                    </div>
+                    <div class="badge bg-info text-white py-2 px-3" style="font-size: 1rem;">
+                        {{ timer }}
+                    </div>
+                </div>
+                <div class="p-3 mb-4" style="border: 1px solid #007bff; border-radius: 5px;">
+                    <h4 class="card-text">.....Question Statement.....</h4>
+                </div>
+                <form action="{{ url_for('user.save_answer', quiz_id=quiz.id, question_id=question.id) }}" method="POST">
+                    <div class="form-group text-start">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="option" id="option1" value="option1" required>
+                            <label class="form-check-label" for="option1">1) Option...</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="option" id="option2" value="option2">
+                            <label class="form-check-label" for="option2">2) Option...</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="option" id="option3" value="option3">
+                            <label class="form-check-label" for="option3">3) Option...</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="option" id="option4" value="option4">
+                            <label class="form-check-label" for="option4">4) Option...</label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="submit" name="action" value="save_next" class="btn btn-primary px-4 py-2">Save and Next</button>
+                        <button type="submit" name="action" value="submit_quiz" class="btn btn-success px-4 py-2">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    let timerElement = document.getElementById("timer");
+let totalTime = {{ quiz.duration * 60 }}; // Duration in seconds
+
+function updateTimer() {
+    let minutes = Math.floor(totalTime / 60);
+    let seconds = totalTime % 60;
+    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    totalTime--;
+    if (totalTime < 0) {
+        clearInterval(timerInterval);
+        alert("Time's up!");
+        // Submit the quiz form
+        document.querySelector('form').submit();
+    }
+}
+
+let timerInterval = setInterval(updateTimer, 1000);
+
+</script>
+{% endblock %}

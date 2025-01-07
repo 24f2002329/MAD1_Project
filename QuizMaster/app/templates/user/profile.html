@@ -12,7 +12,6 @@
                     <p><strong>Username:</strong> {{ user.username }}</p>
                     <p><strong>Full Name:</strong> {{ user.full_name or 'N/A' }}</p>
                     <p><strong>Date of Birth:</strong> {{ user.dob.strftime('%d %B %Y') if user.dob else 'N/A' }}</p>
-                    <p><strong>Role:</strong> {{ user.role or 'User' }}</p>
                 </div>
                 <div class="card-footer text-center">
                     <a href="{{ url_for('user.settings') }}" class="btn btn-primary">Edit Profile</a>
