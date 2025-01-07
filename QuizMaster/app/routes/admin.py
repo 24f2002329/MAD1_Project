@@ -72,7 +72,9 @@ def quiz():
         return "Unauthorized", 403
     quizzes = Quiz.query.all()
     subject = Subject.query.all()
-    return render_template('admin/quiz.html' , quizzes=quizzes, subject=subject)
+    chapters = Chapter.query.all()
+    chapter_dict = {chapter.id: chapter.name for chapter in chapters}
+    return render_template('admin/quiz.html' , quizzes=quizzes, subject=subject, chapter_dict=chapter_dict)
 
 @admin_blueprint.route('/summary')
 def summary():
@@ -267,18 +269,8 @@ def add_question(quiz_id):
         option3 = request.form.get('option3')
         option4 = request.form.get('option4')
         marks = int(request.form.get('marks'))
+        correct_option = request.form.get('correct_option')
         negative_marks = int(request.form.get('negative_marks'))
-
-        # Handle correct option(s)
-        if question_type == 'MSQ':
-            correct_option = ','.join(request.form.getlist('correct_option'))  # Comma-separated for MSQ
-        else:
-            correct_option = request.form.get('correct_option')
-
-
-        if marks < 0 or negative_marks < 0 or marks < negative_marks:
-            flash('Invalid marks or negative marks values.', 'error')
-            return redirect(url_for('admin.add_question', quiz_id=quiz_id))
 
         # Save question to database
         new_question = Question(
@@ -326,7 +318,14 @@ def edit_question(question_id):
 
     question = Question.query.get_or_404(question_id)  # Fetch full question object
     if request.method == 'POST':
-        question.text = request.form['question']  # Updated to match template form input
+        question.title = request.form['question_title']
+        question.text = request.form['question_text']
+        question.type = request.form['question_type']
+        question.option1 = request.form['option1']
+        question.option2 = request.form['option2']
+        question.option3 = request.form['option3']
+        question.option4 = request.form['option4']
+        question.correct_options = request.form['correct_option']
         db.session.commit()
         flash('Question updated successfully.', 'success')
         return redirect(url_for('admin.add_question', quiz_id=question.quiz_id))

@@ -36,20 +36,15 @@
                 <input type="text" id="option4" name="option4" class="form-control" required />
             </div>
             <div class="form-outline mb-4">
-                <label for="correct_option">Correct Option:</label>
-                <select id="correct_option" name="correct_option" class="form-control" required>
-                    <option value="option1">Option 1</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
-                    <option value="option4">Option 4</option>
-                </select>
+                <label for="correct_options">Correct Options [comma separated e.g. 1 or 1,2]:</label>
+                <input type="text" id="correct_options" name="correct_options" class="form-control" />
             </div>
             <div class="form-outline mb-4">
                 <label for="marks">Marks:</label>
                 <input type="number" id="marks" name="marks" class="form-control" />
             </div>
             <div class="form-outline mb-4">
-                <label for="negative_marks">Negative Marks:</label>
+                <label for="negative_marks">Negative Marks [Enter a positive value]:</label>
                 <input type="number" id="negative_marks" name="negative_marks" class="form-control" />
             </div>
             <button type="submit" class="btn btn-primary">Add Question</button>
