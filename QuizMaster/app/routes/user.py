@@ -96,83 +96,27 @@ def view_quiz(quiz_id):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/take')
+@user_blueprint.route('/take-quiz/<int:quiz_id>', methods=['GET', 'POST'])
 def take_quiz(quiz_id):
+    # Fetch the quiz by ID
+    quiz = Quiz.query.filter_by(id=quiz_id).first_or_404()
+    questions = quiz.questions  # Assuming a relationship exists between Quiz and Question
+
+    if request.method == 'POST':
+        # Handle form submission here (e.g., save answers to the database or session)
+        answers = request.form.to_dict()
+        # Logic for evaluating answers or saving them
+        return redirect(url_for('user.quiz_summary', quiz_id=quiz_id))
+    
+    # Pass the quiz and questions to the template
+    current_question_index = 0  # Initialize the current question index
+    return render_template('user/take_quiz.html', quiz=quiz, questions=questions, current_question_index=current_question_index)
+
+
+@user_blueprint.route('instructions/<int:quiz_id>')
+def instructions(quiz_id):
     quiz = Quiz.query.get(quiz_id)
-    questions = Question.query.filter_by(quiz_id=quiz_id).first()
-    return render_template('user/take_quiz.html', quiz=quiz, question=questions)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/submit', methods=['POST'])
-def submit_quiz(quiz_id):
-    quiz = Quiz.query.get(quiz_id)
-    return render_template('user/quiz_detail.html', quiz=quiz)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/result')
-def quiz_result(quiz_id):
-    quiz = Quiz.query.get(quiz_id)
-    return render_template('user/quiz_result.html', quiz=quiz)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/leaderboard')
-def quiz_leaderboard(quiz_id):
-    quiz = Quiz.query.get(quiz_id)
-    return render_template('user/quiz_leaderboard.html', quiz=quiz)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/questions')
-def quiz_questions(quiz_id):
-    quiz = Quiz.query.get(quiz_id)
-    return render_template('user/quiz_questions.html', quiz=quiz)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/question/<int:question_id>')
-def quiz_question(quiz_id, question_id):
-    quiz = Quiz.query.get(quiz_id)
-    question = Question.query.get(question_id)
-    return render_template('user/quiz_question.html', quiz=quiz, question=question)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/question/<int:question_id>/submit', methods=['POST'])
-def submit_answer(quiz_id, question_id):
-    quiz = Quiz.query.get(quiz_id)
-    question = Question.query.get(question_id)
-    return render_template('user/quiz_question.html', quiz=quiz, question=question)
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/question/<int:question_id>/result')
-def question_result(quiz_id, question_id):
-    quiz = Quiz.query.get(quiz_id)
-    question = Question.query.get(question_id)
-    return render_template('user/question_result.html', quiz=quiz, question=question) 
-
-
-@user_blueprint.route('/quiz/<int:quiz_id>/question/<int:question_id>/leaderboard')
-def question_leaderboard(quiz_id, question_id):
-    quiz = Quiz.query.get(quiz_id)
-    question = Question.query.get(question_id)
-    return render_template('user/question_leaderboard.html', quiz=quiz, question=question)
+    if not quiz:
+        flash('Quiz not found!', 'error')
+        return redirect(url_for('user.dashboard'))
+    return render_template('user/instructions.html', quiz=quiz)

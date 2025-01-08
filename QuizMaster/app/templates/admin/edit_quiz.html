@@ -52,6 +52,9 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <div class="text-center my-4">
+                                <a href="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" class="btn btn-success">Add Question</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section class="vh-90 content">
+        <div class="container d-flex justify-content-center align-items-center mt-5">
+            <div class="card text-center shadow-lg p-4 mb-5 bg-white rounded" style="max-width: auto; border: 1px solid #ccc;">
+                <div class="card-body">
+                    <h1>Quiz Instructions</h1>
+                    <p>Please read the following instructions carefully before starting the quiz:</p>
+                    <ul>
+                        <li>The quiz consists of multiple-choice questions (MCQs) and single-choice questions (SCQ)</li>
+                        <li>The type of each question is shown inside quiz.</li>
+                        <li>Each question has four options. Only one of them is correct.</li>
+                        <li>You have a total of <strong>{{quiz.duration}} minutes</strong> to complete the quiz.</li>
+                        <li>Marking scheme will be provided inside the Quiz.</li>
+                        <li>You cannot skip a question. Answer all questions to proceed.</li>
+                        <li>Your progress will be saved automatically.</li>
+                    </ul>
+                    </div>
+                    <a href="{{ url_for('user.take_quiz', quiz_id = quiz.id) }}" class="btn btn-success mt-3 mx-2">Start Quiz</a>
+                    <button class="btn btn-primary mt-3 mx-2" onclick="window.history.back()">Close</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+{% endblock %}
