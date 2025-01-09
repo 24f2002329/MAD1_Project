@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container-fluid p-2 content">
-      <div class="row">
-      <div class="container col-md-6 d-flex justify-content-center align-items-center"">
+      <div class="row mt-5 my-auto mx-auto">
+      <div class="container col-md-5 d-flex justify-content-center align-items-center"">
           <div class="text-center">
         <h1 class="welcome-line">Welcome to Quiz<img src="{{ url_for('static', filename='img/favicon2.png') }}" class="mx-2" style="border-radius: 1rem 0 0 1rem; height: 50px; width: 50px;" />Master!</h1>
+          <img src="{{ url_for('static', filename='img/kids-studying-from-home.gif') }}" class="img-fluid" alt="QuizMaster" style="border-radius: 0 1rem 1rem 0;">
           </div>
       </div>
 
-      <div class="container col-md-6 text-center px-2">
-        <h2 class="text-center my-3">Login/Register</h2>
+      <div class="container col-md-5 text-center px-2 shadow-lg mt-5 mx-auto" style="border-left: 6px solid #000000;">
+        <h2 class="text-center my-3 mt-5">Login/Register</h2>
         <div class="row align-items-start">
           <div class="col-12 col-md text-center">
             <div class="student-icon">

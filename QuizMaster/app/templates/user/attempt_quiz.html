@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-90 content">
+    <div class="container my-5">
+        <div class="shadow-lg p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4>Q.No. {{ current_question_index + 1 }}/{{ questions|length }}</h4>
+                    <h4 class="text-muted">Type: {{questions[current_question_index].type}}</h4>
+                </div>
+                <div>
+                    <h4 id="timer">00:00</h4>
+                </div>
+            </div>
+            <hr>
+            <form action="{{ url_for('user.attempt_quiz', quiz_id=quiz.id) }}" method="POST" id="quiz-form">
+                <div id="question-container">
+                    {% if questions %}
+                        <h5>{{ questions[current_question_index].title }}</h5>
+                        <ul class="list-unstyled">
+                            {% for option in questions[current_question_index].options %}
+                            <li>
+                                <input type="{{ 'checkbox' if questions[current_question_index].type == 'MCQ' else 'radio' }}" name="q{{ questions[current_question_index].id }}" id="option{{ option.id }}" value="{{ option.id }}">
+                                <label for="option{{ option.id }}">{{ option.text }}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No questions available for this quiz.</p>
+                    {% endif %}
+                </div>
+                <div class="mt-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-primary" id="prev-question" disabled>Previous</button>
+                    <button type="button" class="btn btn-primary" id="next-question">Next</button>
+                </div>
+                <div class="mt-3 text-center">
+                    <button type="submit" class="btn btn-success">Submit Quiz</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    let timerElement = document.getElementById('timer');
+    let quizDuration = Number("{{ quiz.duration }}") * 60;  // Convert minutes to seconds
+
+    // Timer logic
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (--timer < 0) {
+                document.getElementById('quiz-form').submit();  // Auto-submit form
+            }
+        }, 1000);
+    }
+    startTimer(quizDuration);
+
+    // Pagination logic
+    let currentQuestionIndex = Number("{{ current_question_index }}");
+    // const quizQuestions = {{ questions|tojson|safe }};
+    const quizQuestions = JSON.parse('{{ questions|tojson|safe }}');
+    const userResponses = {};
+
+    document.getElementById('next-question').addEventListener('click', () => {
+        // Save current response
+        saveResponse();
+        // Show the next question
+        if (currentQuestionIndex < quizQuestions.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+    });
+
+    document.getElementById('prev-question').addEventListener('click', () => {
+        // Save current response
+        saveResponse();
+        // Show the previous question
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+    });
+
+    function saveResponse() {
+        const questionId = quizQuestions[currentQuestionIndex].id;
+        const selectedOptions = [];
+        document.querySelectorAll(`input[name="q${questionId}"]:checked`).forEach(option => {
+            selectedOptions.push(option.value);
+        });
+        userResponses[questionId] = selectedOptions;
+    }
+
+    function renderQuestion() {
+        // Update question content and options dynamically
+        const question = quizQuestions[currentQuestionIndex];
+        document.querySelector('h5').innerText = question.title;
+        document.querySelector('.text-muted').innerText = `Type: ${question.type}`;
+        document.querySelector('h4').innerText = `Q.No. ${currentQuestionIndex + 1}/${quizQuestions.length}`;
+        const optionsList = document.querySelector('ul.list-unstyled');
+        optionsList.innerHTML = '';
+        question.options.forEach(option => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <input type="${question.type === 'MCQ' ? 'checkbox' : 'radio'}" name="q${question.id}" id="option${option.id}" value="${option.id}">
+                <label for="option${option.id}">${option.text}</label>
+            `;
+            optionsList.appendChild(li);
+        });
+
+        // Pre-fill the user's previous responses
+        if (userResponses[question.id]) {
+            userResponses[question.id].forEach(value => {
+                document.querySelector(`input[name="q${question.id}"][value="${value}"]`).checked = true;
+            });
+        }
+
+        // Enable/disable navigation buttons
+        document.getElementById('prev-question').disabled = currentQuestionIndex === 0;
+        document.getElementById('next-question').disabled = currentQuestionIndex === quizQuestions.length - 1;
+    }
+
+    // Initial render
+    renderQuestion();
+</script>
+
+
+
+<!-- 
+<script>
+    let timerElement = document.getElementById('timer');
+    let quizDuration = Number("{{ quiz.duration }}") * 60;  // Convert minutes to seconds
+
+    // Timer logic
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (--timer < 0) {
+                document.getElementById('quiz-form').submit();  // Auto-submit form
+            }
+        }, 1000);
+    }
+    startTimer(quizDuration);
+
+    // Pagination logic
+    let currentQuestionIndex = Number("{{ current_question_index }}");
+    const quizQuestions = JSON.parse('{{ questions|tojson|safe }}');
+    document.getElementById('next-question').addEventListener('click', () => {
+        // Save current response
+        saveResponse();
+        // Show the next question
+        if (currentQuestionIndex < quizQuestions.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+    });
+
+    document.getElementById('prev-question').addEventListener('click', () => {
+        // Save current response
+        saveResponse();
+        // Show the previous question
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+    });
+
+    function saveResponse() {
+        const questionId = quizQuestions[currentQuestionIndex].id;
+        const selectedOptions = [];
+        document.querySelectorAll(`input[name="q${questionId}"]:checked`).forEach(option => {
+            selectedOptions.push(option.value);
+        });
+        userResponses[questionId] = selectedOptions;
+    }
+
+    function renderQuestion() {
+        // Update question content and options dynamically
+        const question = quizQuestions[currentQuestionIndex];
+        document.querySelector('h5').innerText = question.title;
+        const optionsList = document.querySelector('ul.list-unstyled');
+        optionsList.innerHTML = '';
+        question.options.forEach(option => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <input type="${question.type === 'MCQ' ? 'checkbox' : 'radio'}" name="q${question.id}" id="option${option.id}" value="${option.id}">
+                <label for="option${option.id}">${option.text}</label>
+            `;
+            optionsList.appendChild(li);
+        });
+
+        // Pre-fill the user's previous responses
+        if (userResponses[question.id]) {
+            userResponses[question.id].forEach(value => {
+                document.querySelector(`input[name="q${question.id}"][value="${value}"]`).checked = true;
+            });
+        }
+
+        // Enable/disable navigation buttons
+        document.getElementById('prev-question').disabled = currentQuestionIndex === 0;
+        document.getElementById('next-question').disabled = currentQuestionIndex === quizQuestions.length - 1;
+    }
+
+    // Initial render
+    renderQuestion();
+</script> -->
+{% endblock %}

@@ -55,4 +55,29 @@ class Question(db.Model):
     marks = db.Column(db.Integer, nullable=False)
     negative_marks = db.Column(db.Integer, nullable=False)
 
+class QuizAttempt(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)  # Ensure this line is present
+    answer = db.Column(db.String(200), nullable=False)
+    attempt_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    quiz = db.relationship('Quiz', backref='quiz_attempts', lazy=True)
+    user = db.relationship('User', backref='quiz_attempts', lazy=True)
+    question = db.relationship('Question', backref='quiz_attempts', lazy=True)
 
+
+
+class Result(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    total_questions = db.Column(db.Integer, nullable=False)
+    attempted_questions = db.Column(db.Integer, nullable=False)
+    correct_answers = db.Column(db.Integer, nullable=False)
+    wrong_answers = db.Column(db.Integer, nullable=False)
+    skipped_questions = db.Column(db.Integer, nullable=False)
+    user = db.relationship('User', backref='result', lazy=True)
+    quiz = db.relationship('Quiz', backref='result', lazy=True)
+    created_at = db.Column(db.DateTime, default=datetime.now)

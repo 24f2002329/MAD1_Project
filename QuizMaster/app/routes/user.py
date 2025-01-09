@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, request, flash
+from flask import Blueprint, render_template, session, redirect, url_for, request, flash, jsonify
 from app.models.models import *
 from datetime import datetime
 
@@ -94,23 +94,60 @@ def view_quiz(quiz_id):
     quiz = Quiz.query.get(quiz_id)
     return render_template('user/view_quiz.html', quiz=quiz)
 
+from flask import jsonify
 
-
-@user_blueprint.route('/take-quiz/<int:quiz_id>', methods=['GET', 'POST'])
-def take_quiz(quiz_id):
-    # Fetch the quiz by ID
-    quiz = Quiz.query.filter_by(id=quiz_id).first_or_404()
-    questions = quiz.questions  # Assuming a relationship exists between Quiz and Question
-
-    if request.method == 'POST':
-        # Handle form submission here (e.g., save answers to the database or session)
-        answers = request.form.to_dict()
-        # Logic for evaluating answers or saving them
-        return redirect(url_for('user.quiz_summary', quiz_id=quiz_id))
+@user_blueprint.route('/attempt_quiz/<int:quiz_id>', methods=['GET', 'POST'])
+def attempt_quiz(quiz_id):
+    quiz = Quiz.query.get_or_404(quiz_id)
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
     
-    # Pass the quiz and questions to the template
+    if request.method == 'POST':
+        user_id = session.get('user_id')
+        if not user_id:
+            flash('You must be logged in to attempt the quiz.', 'error')
+            return redirect(url_for('auth.user_login'))
+
+        # Retrieve user's answers from the form
+        answers = request.form.to_dict(flat=False)
+
+        # Save the quiz attempt
+        for question_id, answer_list in answers.items():
+            if question_id.startswith('q'):
+                question_id = int(question_id[1:])
+                for answer in answer_list:
+                    attempt = QuizAttempt(
+                        user_id=user_id,
+                        quiz_id=quiz_id,
+                        question_id=question_id,
+                        answer=answer,
+                        attempt_date=datetime.now()
+                    )
+                    db.session.add(attempt)
+
+        db.session.commit()
+        flash('Quiz attempt saved successfully!', 'success')
+        return redirect(url_for('user.dashboard'))
+
     current_question_index = 0  # Initialize the current question index
-    return render_template('user/take_quiz.html', quiz=quiz, questions=questions, current_question_index=current_question_index)
+
+    # Serialize questions to JSON-compatible format
+    serialized_questions = [
+        {
+            'id': question.id,
+            'title': question.title,
+            'type': question.type,
+            'options': [
+                {'id': 'option1', 'text': question.option1},
+                {'id': 'option2', 'text': question.option2},
+                {'id': 'option3', 'text': question.option3},
+                {'id': 'option4', 'text': question.option4}
+            ]
+        }
+        for question in questions
+    ]
+
+    return render_template('user/attempt_quiz.html', quiz=quiz, questions=serialized_questions, current_question_index=current_question_index)
+
 
 
 @user_blueprint.route('instructions/<int:quiz_id>')

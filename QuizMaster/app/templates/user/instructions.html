@@ -16,7 +16,7 @@
                         <li>Your progress will be saved automatically.</li>
                     </ul>
                     </div>
-                    <a href="{{ url_for('user.take_quiz', quiz_id = quiz.id) }}" class="btn btn-success mt-3 mx-2">Start Quiz</a>
+                    <a href="{{ url_for('user.attempt_quiz', quiz_id = quiz.id) }}" class="btn btn-success mt-3 mx-2">Start Quiz</a>
                     <button class="btn btn-primary mt-3 mx-2" onclick="window.history.back()">Close</button>
                 </div>
             </div>

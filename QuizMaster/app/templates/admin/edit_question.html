@@ -17,10 +17,10 @@
                                 <input type="text" class="form-control" id="question_text" name="question_text" value="{{ question.text }}">
                             </div>
                             <div class="form-outline">
-                                <label for="question_type">Type:</label>
-                                <select id="question_type" name="question_type" class="form-control" value="{{ question.type }}" required>
+                                <label for="question_type">Type [Current Type: {{question.type}}]:</label>
+                                <select id="question_type" name="question_type" class="form-control" required>
                                     <option value="SCQ">Single Correct Question</option>
-                                    <option value="MSQ">Multiple Correct Questions</option>
+                                    <option value="MCQ">Multiple Correct Questions</option>
                                 </select>
                             </div>
                             <div class="form-group">
