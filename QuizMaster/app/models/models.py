@@ -59,7 +59,7 @@ class QuizAttempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)  # Ensure this line is present
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     answer = db.Column(db.String(200), nullable=False)
     attempt_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     quiz = db.relationship('Quiz', backref='quiz_attempts', lazy=True)

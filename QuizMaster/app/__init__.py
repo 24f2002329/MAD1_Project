@@ -1,21 +1,21 @@
 from flask import Flask, jsonify ,render_template, redirect, url_for, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
-# from flask_migrate import Migrate
+from flask_migrate import Migrate
 from datetime import timedelta
 
 
 app = Flask(__name__)
 
 db = SQLAlchemy()
-DB_NAME = "database.db"
+migrate = Migrate()
 
 from .models.models import *
 
 
 def create_app():
     app.config['SECRET_KEY'] = "quizmaster"
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_NAME}"
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///database.db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Set session timeout to 10 minutes
 
@@ -39,9 +39,9 @@ def create_app():
     app.register_blueprint(admin_blueprint)
 
     db.init_app(app)
+    migrate.init_app(app, db)
     with app.app_context():
         db.create_all()
-    # migrate = Migrate(app, db)
     
 
 
