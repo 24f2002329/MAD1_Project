@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from flask_migrate import Migrate
 from datetime import timedelta
+import os   
 
 
 app = Flask(__name__)
@@ -15,9 +16,15 @@ from .models.models import *
 
 def create_app():
     app.config['SECRET_KEY'] = "quizmaster"
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///database.db"
+
+    # Use absolute path for the database
+    database_path = os.path.join(app.instance_path, 'database.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{database_path}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Set session timeout to 10 minutes
+
+     # Ensure the instance folder exists
+    os.makedirs(app.instance_path, exist_ok=True)
 
 
     @app.before_request
@@ -40,10 +47,6 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    with app.app_context():
-        db.create_all()
-    
-
 
     @app.route('/')
     def home():
