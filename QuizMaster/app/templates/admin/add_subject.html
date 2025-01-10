@@ -10,6 +10,10 @@
                         <label class="form-label" for="subject">Subject Name:</label>
                         <input type="text" id="subject" name="subject" class="form-control form-control-lg" required />
                     </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="subject_desc">Subject Description:</label>
+                        <input type="text" id="subject_desc" name="subject_desc" class="form-control form-control-lg" required />
+                    </div>
                     <button type="submit" class="btn btn-primary my-2 py-auto">Create</button>
                 </form>
                 <h3 class="text-center my-4">Already Listed Subjects</h3>
@@ -17,7 +21,8 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Subject Name</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -26,6 +31,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ subject.name }}</td>
+                            <td>{{ subject.desc }}</td>
                             <td>
                                 <a href="{{ url_for('admin.edit_subject', subject_id=subject.id) }}" class="btn btn-primary">Edit</a>
                                 <a href="{{ url_for('admin.delete_subject', subject_id=subject.id) }}" class="btn btn-danger">Delete</a>

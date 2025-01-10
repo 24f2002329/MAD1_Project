@@ -9,7 +9,6 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Quiz ID</th>
-                        <th scope="col">No. of Ques.</th>
                         <th scope="col">Chapter</th>
                         <th scope="col">Date</th>
                         <th scope="col">Duration</th>
@@ -21,13 +20,17 @@
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ quiz.id }}</td>
-                        <td>{{ quiz.questions|length }}</td>
-                        <td>{{ quiz.chapter.name }}</td>
+                        <td>{{ quiz.chapter.name }} ({{ quiz.chapter.subject.name }})</td>
                         <td>{{ quiz.quiz_date.strftime('%d-%B-%Y') }}</td>
                         <td>{{ quiz.duration }} minutes</td>
                         <td>
-                            <a href="{{ url_for('user.view_quiz', quiz_id=quiz.id) }}" class="btn btn-warning my-2">View</a>
-                            <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-success">Start</a>
+                            <a href="{{ url_for('user.view_quiz', quiz_id=quiz.id) }}" class="btn btn-warning my-2 mx-2">View</a>
+                            <!-- <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-success">Start</a> -->
+                            {% if quiz.status == 'attempted' %}
+                                <a class="text-success btn btn-primary">Attempted</a>
+                            {% else %}
+                                <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-primary">Start Quiz</a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

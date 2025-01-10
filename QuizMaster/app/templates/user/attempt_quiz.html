@@ -10,13 +10,13 @@
                 </div>
                 <div>
                     <h4 id="timer">00:00</h4>
-                </div>
+                </div> 
             </div>
             <hr>
             <form action="{{ url_for('user.attempt_quiz', quiz_id=quiz.id) }}" method="POST" id="quiz-form">
                 <div id="question-container">
                     {% if questions %}
-                        <h5>{{ questions[current_question_index].title }}</h5>
+                        <h5>{{ questions[current_question_index].text }}</h5>
                         <ul class="list-unstyled">
                             {% for option in questions[current_question_index].options %}
                             <li>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
                     <button type="button" class="btn btn-primary" id="prev-question" disabled>Previous</button>
-                    <button type="button" class="btn btn-primary" id="next-question">Next</button>
+                    <button type="button" class="btn btn-primary" id="next-question">Save & Next</button>
                 </div>
                 <div class="mt-3 text-center">
                     <button type="submit" class="btn btn-success">Submit Quiz</button>
@@ -97,24 +97,33 @@
     function renderQuestion() {
         // Update question content and options dynamically
         const question = quizQuestions[currentQuestionIndex];
-        document.querySelector('h5').innerText = question.title;
         document.querySelector('.text-muted').innerText = `Type: ${question.type}`;
         document.querySelector('h4').innerText = `Q.No. ${currentQuestionIndex + 1}/${quizQuestions.length}`;
+        document.querySelector('h5').innerText = `Q. Statement: ${question.text}`;
         const optionsList = document.querySelector('ul.list-unstyled');
         optionsList.innerHTML = '';
         question.options.forEach(option => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <input type="${question.type === 'MCQ' ? 'checkbox' : 'radio'}" name="q${question.id}" id="option${option.id}" value="${option.id}">
-                <label for="option${option.id}">${option.text}</label>
+                <input type="${question.type === 'MCQ' ? 'checkbox' : 'radio'}" 
+                    name="q${question.id}" 
+                    id="${option.id}" 
+                    value="${option.text}">
+                <label for="${option.id}">${option.text}</label>
             `;
             optionsList.appendChild(li);
         });
 
+        if (question.options.length === 0) {
+            optionsList.innerHTML = '<p class="text-muted">No options available for this question.</p>';
+        }
+
+
         // Pre-fill the user's previous responses
         if (userResponses[question.id]) {
             userResponses[question.id].forEach(value => {
-                document.querySelector(`input[name="q${question.id}"][value="${value}"]`).checked = true;
+                const input = document.querySelector(`input[name="q${question.id}"][value="${value}"]`);
+                if (input) input.checked = true;
             });
         }
 

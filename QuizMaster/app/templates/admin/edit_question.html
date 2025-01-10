@@ -9,39 +9,50 @@
                     <div class="card-body">
                         <form action="{{ url_for('admin.edit_question', question_id=question.id) }}" method="POST">
                             <div class="form-group">
-                                <label for="question_title">Question Title</label>
+                                <label for="question_title" class="myLabel">Question Title</label>
                                 <input type="text" class="form-control" id="question_title" name="question_title" value="{{ question.title }}">
                             </div>
                             <div class="form-group">
-                                <label for="question_text">Question Statement</label>
+                                <label for="question_text" class="myLabel">Question Statement</label><br>
+                                {% if question.question_image %}
+                                <img class="my-2" src="{{ url_for('static', filename='img/question/' + question.question_image) }}" alt="Question Image">
+                                {% endif %}
                                 <input type="text" class="form-control" id="question_text" name="question_text" value="{{ question.text }}">
                             </div>
-                            <div class="form-outline">
-                                <label for="question_type">Type [Current Type: {{question.type}}]:</label>
+                            <div class="form-group">
+                                <label for="question_type" class="myLabel">Type [Current Type: {{question.type}}]:</label>
                                 <select id="question_type" name="question_type" class="form-control" required>
                                     <option value="SCQ">Single Correct Question</option>
                                     <option value="MCQ">Multiple Correct Questions</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="option1">Option 1</label>
+                                <label for="option1" class="myLabel">Option 1</label>
                                 <input type="text" class="form-control" id="option1" name="option1" value="{{ question.option1 }}">
                             </div>
                             <div class="form-group">
-                                <label for="option2">Option 2</label>
+                                <label for="option2" class="myLabel">Option 2</label>
                                 <input type="text" class="form-control" id="option2" name="option2" value="{{ question.option2 }}">
                             </div>
                             <div class="form-group">
-                                <label for="option3">Option 3</label>
+                                <label for="option3" class="myLabel">Option 3</label>
                                 <input type="text" class="form-control" id="option3" name="option3" value="{{ question.option3 }}">
                             </div>
                             <div class="form-group">
-                                <label for="option4">Option 4</label>
+                                <label for="option4" class="myLabel">Option 4</label>
                                 <input type="text" class="form-control" id="option4" name="option4" value="{{ question.option4 }}">
                             </div>
                             <div class="form-group">
-                                <label for="correct_option">Correct Option</label>
+                                <label for="correct_option" class="myLabel">Correct Option</label>
                                 <input type="text" class="form-control" id="correct_option" name="correct_option" value="{{ question.correct_options }}">
+                            </div>
+                            <div>
+                                <label for="marks" class="myLabel">Marks</label>
+                                <input type="number" class="form-control" id="marks" name="marks" value="{{ question.marks }}">
+                            </div>
+                            <div>
+                                <label for="negative_marks" class="myLabel">Negative Marks</label>
+                                <input type="number" class="form-control" id="negative_marks" name="negative_marks" value="{{ question.negative_marks }}">
                             </div>
                             <button type="submit" class="btn btn-primary my-3">Submit</button>
                         </form>

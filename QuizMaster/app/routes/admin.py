@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, redirect
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, redirect, current_app
+import os
 from app.models.models import *
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -56,7 +58,9 @@ def add_subject():
 
     if request.method == 'POST':
         name = request.form['subject']
-        subject = Subject(name=name)
+        desc = request.form['subject_desc']
+        subject = Subject(name=name, desc=desc)
+
         db.session.add(subject)
         db.session.commit()
         flash('Subject added successfully.', 'success')
@@ -211,7 +215,7 @@ def add_quiz(chapter_id):
 
         duration = request.form['quiz_duration']
         quiz_chapter = Chapter.query.filter_by(id=chapter_id).first().name
-        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration, quiz_chapter=quiz_chapter)
+        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration)
         db.session.add(quiz)
         db.session.commit()
         flash('Quiz added successfully.', 'success')
@@ -272,9 +276,8 @@ def add_question(quiz_id):
         correct_options = request.form.get('correct_options')
         negative_marks = int(request.form.get('negative_marks'))
 
-        # Save question to database
-        new_question = Question(
-            quiz_id=quiz_id,
+        # Save question to the database first to get the question ID
+        question = Question(
             title=question_title,
             text=question_text,
             type=question_type,
@@ -283,10 +286,36 @@ def add_question(quiz_id):
             option3=option3,
             option4=option4,
             correct_options=correct_options,
-            marks=marks,
-            negative_marks=negative_marks
+            quiz_id=quiz_id
         )
-        db.session.add(new_question)
+        db.session.add(question)
+        db.session.commit()
+
+
+        # Handle file uploads
+        def save_image(file, prefix):
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                dot_index = filename.rfind('.')
+                custom_filename = f"{prefix}{filename[dot_index:]}"
+                filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], custom_filename)
+                file.save(filepath)
+                return custom_filename
+            return None
+
+        question_image_path = save_image(request.files['question_image'], f'Q{quiz_id}-QID{question.id}-question')
+        option1_image_path = save_image(request.files['option1_image'], 'Q{quiz_id}-QID{question.id}-option1')
+        option2_image_path = save_image(request.files['option2_image'], 'Q{quiz_id}-QID{question.id}-option2')
+        option3_image_path = save_image(request.files['option3_image'], 'Q{quiz_id}-QID{question.id}-option3')
+        option4_image_path = save_image(request.files['option4_image'], 'Q{quiz_id}-QID{question.id}-option4')
+
+
+        # Update question with image paths
+        question.question_image = question_image_path
+        question.option1_image = option1_image_path
+        question.option2_image = option2_image_path
+        question.option3_image = option3_image_path
+        question.option4_image = option4_image_path
         db.session.commit()
 
         flash('Question added successfully!', 'success')
@@ -340,7 +369,8 @@ def edit_subject(subject_id):
 
     subject = Subject.query.get_or_404(subject_id)  # Fetch full subject object
     if request.method == 'POST':
-        subject.name = request.form['subject']  # Updated to match template form input
+        subject.name = request.form['subject_name']  # Updated to match template form input
+        subject.desc = request.form['subject_desc']
         db.session.commit() # Save changes to the database
         flash('Subject updated successfully.', 'success')
         return redirect(url_for('admin.dashboard'))

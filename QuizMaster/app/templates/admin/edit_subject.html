@@ -10,7 +10,11 @@
                         <label class="form-label" for="subject_name">Subject Name:</label>
                         <input type="text" id="subject_name" name="subject_name" class="form-control form-control-lg bg-light" value="{{ subject.name }}" required />
                     </div>
-                    <button type="submit" class="btn btn-primary my-2 py-auto">Change Subject Name</button>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="subject_desc">Subject Description:</label>
+                        <input type="text" id="subject_desc" name="subject_desc" class="form-control form-control-lg bg-light" value="{{ subject.desc }}" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary my-2 py-auto">Change Subject Details</button>
                 </form>
                 <div>
                     <h4 class="mx-2 my-4">Chapters in {{ subject.name }}</h4>
@@ -19,6 +23,7 @@
                             <tr>
                                 <th>Chapter ID</th>
                                 <th>Chapter Name</th>
+                                <th>Description</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -27,6 +32,7 @@
                             <tr>
                                 <td>{{ chapter.id }}</td>
                                 <td>{{ chapter.name }}</td>
+                                <td>{{ chapter.desc }}</td>
                                 <td>
                                     <a href="{{ url_for('admin.edit_chapter', chapter_id=chapter.id) }}" class="btn btn-primary">Edit</a>
                                     <a href="{{ url_for('admin.delete_chapter', chapter_id=chapter.id) }}" class="btn btn-danger">Delete</a>

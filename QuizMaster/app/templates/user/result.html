@@ -1,0 +1,28 @@
+{% extends base.html %}
+{% block content %}
+
+<section class="vh-90 content">
+    <div class="container text-center">
+        <div class="row">
+        <h1 class="text-center mb-4">Result</h1>
+        <div class="col-md-6 mx-auto">
+            <div class="card mx-2 my-2 px-2 py-2 shadow ">
+                <div class="card-body">
+                    <h2 class="text-center">Your Score: {{ result.score }}</h2>
+                    <h3 class="text-center">Total Marks: {{ result.total_marks }}</h3>
+                    <h3 class="text-center">Total Questions: {{ result.total_questions }}</h3>
+                    <h3 class="text-center">Correct Answers: {{ result.correct_answers }}</h3>
+                    <h3 class="text-center">Incorrect Answers: {{ result.incorrect_answers }}</h3>
+                    <h3 class="text-center">Unattempted Questions: {{ result.unattempted_questions }}</h3>
+                    <h3 class="text-center">Percentage: {{ result.percentage }}%</h3>
+                    <h3 class="text-center">Time Taken: {{ result.time_taken }}</h3>
+                    <a href="{{ url_for('user.quiz', quiz_id=quiz_id) }}" class="btn btn-primary">Go Back</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

@@ -22,9 +22,11 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{database_path}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Set session timeout to 10 minutes
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.static_folder, 'img/question')
 
-     # Ensure the instance folder exists
+    # Ensure the instance folder exists
     os.makedirs(app.instance_path, exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
     @app.before_request
