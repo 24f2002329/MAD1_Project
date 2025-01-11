@@ -30,34 +30,53 @@
                     {% endif %}
                 </div>
                 <div class="mt-3 d-flex justify-content-between">
-                    <button type="button" class="btn btn-primary" id="prev-question" disabled>Previous</button>
-                    <button type="button" class="btn btn-primary" id="next-question">Save & Next</button>
+                    <button type="button" class="btn btn-primary" id="prev-question" onclick="saveResponseAndPrev()" disabled>Previous</button>
+                    <!-- <button type="button" class="btn btn-primary" id="next-question">Save & Next</button> -->
+                    <button type="button" class="btn btn-primary" id="next-question" onclick="saveResponseAndNext()">Save & Next</button>
                 </div>
                 <div class="mt-3 text-center">
-                    <button type="submit" class="btn btn-success">Submit Quiz</button>
+                    <button type="button" class="btn btn-success" id="final-submit" onclick="finalSubmit()">Submit Quiz</button>
+
                 </div>
             </form>
         </div>
     </div>
 </section>
 
+<!-- 
 <script>
     let timerElement = document.getElementById('timer');
     let quizDuration = Number("{{ quiz.duration }}") * 60;  // Convert minutes to seconds
 
-    // Timer logic
     function startTimer(duration) {
         let timer = duration, minutes, seconds;
-        setInterval(function () {
+        const interval = setInterval(function () {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
+
             timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
             if (--timer < 0) {
-                document.getElementById('quiz-form').submit();  // Auto-submit form
+                clearInterval(interval);
+                alert("Time is up! Your quiz will be submitted automatically.");
+                document.getElementById('quiz-form').submit();  // Submit the form automatically
             }
         }, 1000);
     }
     startTimer(quizDuration);
+
+
+    function finalSubmit() {
+        saveResponseAndNext(); // Save the last response
+        setTimeout(() => {
+            document.getElementById('quiz-form').submit(); // Submit the form
+        }, 1000); // Allow time for the save request to complete
+    }
+
+
+
+
+
 
     // Pagination logic
     let currentQuestionIndex = Number("{{ current_question_index }}");
@@ -65,34 +84,75 @@
     const quizQuestions = JSON.parse('{{ questions|tojson|safe }}');
     const userResponses = {};
 
-    document.getElementById('next-question').addEventListener('click', () => {
-        // Save current response
-        saveResponse();
-        // Show the next question
-        if (currentQuestionIndex < quizQuestions.length - 1) {
-            currentQuestionIndex++;
-            renderQuestion();
-        }
-    });
 
-    document.getElementById('prev-question').addEventListener('click', () => {
-        // Save current response
-        saveResponse();
-        // Show the previous question
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            renderQuestion();
-        }
-    });
 
-    function saveResponse() {
+    function saveResponseAndNext() {
         const questionId = quizQuestions[currentQuestionIndex].id;
         const selectedOptions = [];
         document.querySelectorAll(`input[name="q${questionId}"]:checked`).forEach(option => {
             selectedOptions.push(option.value);
         });
-        userResponses[questionId] = selectedOptions;
+
+        // Send the response to the server
+        fetch('/user/save_response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quiz_id: "{{ quiz.id }}",
+                question_id: questionId,
+                answers: selectedOptions
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // Move to the next question
+                if (currentQuestionIndex < quizQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                }
+            }
+        });
     }
+
+    function saveResponseAndPrev() {
+        const questionId = quizQuestions[currentQuestionIndex].id;
+        const selectedOptions = [];
+        document.querySelectorAll(`input[name="q${questionId}"]:checked`).forEach(option => {
+            selectedOptions.push(option.value);
+        });
+
+        // Send the response to the server
+        fetch('/user/save_response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quiz_id: "{{ quiz.id }}",
+                question_id: questionId,
+                answers: selectedOptions
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // Move to the previous question
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    renderQuestion();
+                }
+            }
+        });
+    }
+
+
 
     function renderQuestion() {
         // Update question content and options dynamically
@@ -134,7 +194,175 @@
 
     // Initial render
     renderQuestion();
+</script> -->
+
+
+
+
+<script>
+    let timerElement = document.getElementById('timer');
+    let quizDuration = Number("{{ quiz.duration }}") * 60;  // Convert minutes to seconds
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const interval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (--timer < 0) {
+                clearInterval(interval);
+                alert("Time is up! Your quiz will be submitted automatically.");
+                document.getElementById('quiz-form').submit();  // Submit the form automatically
+            }
+        }, 1000);
+    }
+    startTimer(quizDuration);
+
+
+    function finalSubmit() {
+        saveResponse() // Save the last response
+        setTimeout(() => {
+            document.getElementById('quiz-form').submit(); // Submit the form
+        }, 1000); // Allow time for the save request to complete
+    }
+
+
+
+
+
+
+    // Pagination logic
+    let currentQuestionIndex = Number("{{ current_question_index }}");
+    // const quizQuestions = {{ questions|tojson|safe }};
+    const quizQuestions = JSON.parse('{{ questions|tojson|safe }}');
+    const userResponses = {};
+
+    function saveResponse() {
+        const questionId = quizQuestions[currentQuestionIndex].id;
+        const selectedOptions = [];
+        document.querySelectorAll(`input[name="q${questionId}"]:checked`).forEach(option => {
+            selectedOptions.push(option.value);
+        });
+        userResponses[questionId] = selectedOptions;
+    }
+
+
+    function saveResponseAndNext() {
+        saveResponse();
+
+        fetch('/user/save_response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quiz_id: "{{ quiz.id }}",
+                question_id: quizQuestions[currentQuestionIndex].id,
+                answers: userResponses[quizQuestions[currentQuestionIndex].id]
+            })
+        })
+        // .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                if (currentQuestionIndex < quizQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    function saveResponseAndPrev() {
+        saveResponse();
+
+        fetch('/user/save_response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quiz_id: "{{ quiz.id }}",
+                question_id: quizQuestions[currentQuestionIndex].id,
+                answers: userResponses[quizQuestions[currentQuestionIndex].id]
+            })
+        })
+        // .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    renderQuestion();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+
+
+    function renderQuestion() {
+        const question = quizQuestions[currentQuestionIndex];
+        document.querySelector('.text-muted').innerText = `Type: ${question.type}`;
+        document.querySelector('h4').innerText = `Q.No. ${currentQuestionIndex + 1}/${quizQuestions.length}`;
+        document.querySelector('h5').innerText = `Q. Statement: ${question.text}`;
+        const optionsList = document.querySelector('ul.list-unstyled');
+        optionsList.innerHTML = '';
+        question.options.forEach(option => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <input type="${question.type === 'MCQ' ? 'checkbox' : 'radio'}" 
+                    name="q${question.id}" 
+                    id="option${option.id}" 
+                    value="${option.id}">
+                <label for="${option.id}">${option.text}</label>
+            `;
+            optionsList.appendChild(li);
+        });
+
+        if (question.options.length === 0) {
+            optionsList.innerHTML = '<p class="text-muted">No options available for this question.</p>';
+        }
+
+        // Pre-fill the user's previous responses
+        if (userResponses[question.id]) {
+            userResponses[question.id].forEach(value => {
+                const input = document.querySelector(`input[name="q${question.id}"][value="${value}"]`);
+                if (input) input.checked = true;
+            });
+        }
+
+        // Enable/disable navigation buttons
+        document.getElementById('prev-question').disabled = currentQuestionIndex === 0;
+        document.getElementById('next-question').disabled = currentQuestionIndex === quizQuestions.length - 1;
+    }
+
+    // Initial render
+    renderQuestion();
 </script>
+
 
 
 
@@ -219,4 +447,5 @@
     // Initial render
     renderQuestion();
 </script> -->
+
 {% endblock %}

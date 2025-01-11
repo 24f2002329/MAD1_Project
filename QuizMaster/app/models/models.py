@@ -42,6 +42,9 @@ class Quiz(db.Model):
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
+    # def is_attempted_by_user(self, user_id):
+    #     return QuizAttempt.query.filter_by(user_id=user_id, quiz_id=self.id).count() > 0
+
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -68,7 +71,7 @@ class QuizAttempt(db.Model):
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
-    answer = db.Column(db.String(200), nullable=False)
+    answers = db.Column(db.String(500), nullable=False)
     attempt_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     user = db.relationship('User', backref='quiz_attempts', lazy=True)
@@ -92,7 +95,7 @@ class Result(db.Model):
     quiz = db.relationship('Quiz', backref='results', lazy=True)
 
 
-
+ 
 
 
 

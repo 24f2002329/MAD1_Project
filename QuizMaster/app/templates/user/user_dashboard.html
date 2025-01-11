@@ -26,14 +26,14 @@
                         <td>
                             <a href="{{ url_for('user.view_quiz', quiz_id=quiz.id) }}" class="btn btn-warning my-2 mx-2">View</a>
                             <!-- <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-success">Start</a> -->
-                            {% if quiz.status == 'attempted' %}
-                                <a class="text-success btn btn-primary">Attempted</a>
+                            {% if results %}
+                                <a class="text-dark btn btn-success">Attempted</a>
                             {% else %}
                                 <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-primary">Start Quiz</a>
                             {% endif %}
                         </td>
                     </tr>
-                    {% endfor %}
+                    {% endfor %} 
                 </tbody>
             </table>
         {% else %}
