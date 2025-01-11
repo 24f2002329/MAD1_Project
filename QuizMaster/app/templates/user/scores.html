@@ -1,23 +1,39 @@
 {% extends "base.html" %}
-
 {% block content %}
 <section class="vh-90 content">
-    <h1>Scores</h1>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Quiz</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for score in scores %}
-                <tr>
-                    <td>{{ score.quiz.name }}</td>
-                    <td>{{ score.score }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container my-5">
+        <div class="shadow-lg p-4">
+            <h1 class="text-center">Quiz Scores</h1>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>No. Of Qn.</th>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th> </th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for score in scores %}
+                            <tr>
+                                <td scope="row">{{ score.quiz_id }}</td>
+                                <td>{{ score.quiz.questions|length }}</td>
+                                <td>{{ score.created_at.strftime('%d-%B-%Y') }}</td>
+                                <td>{{ score.score }}/{{ score.total_marks_quiz }}</td>
+                                <td><a href="{{ url_for('user.quiz_score', quiz_id=score.quiz_id) }}" class="btn btn-success">View</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div class="text-center">
+                <a href="{{ url_for('user.dashboard') }}" class="btn btn-dark">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
 </section>
 {% endblock %}

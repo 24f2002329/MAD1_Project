@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request, flash, jsonify
 from app.models.models import *
 from datetime import datetime
+import matplotlib as plt
+import os
 
 user_blueprint = Blueprint('user', __name__, url_prefix='/user')
 
@@ -18,29 +20,48 @@ def dashboard():
     if 'user_id' not in session or session['user_id'] == 0:
         return render_template('index.html')
     upcoming_quizzes = Quiz.query.filter(Quiz.quiz_date >= datetime.today()).order_by(Quiz.quiz_date).all()
+    past_quizzes = Quiz.query.filter(Quiz.quiz_date < datetime.today()).order_by(Quiz.quiz_date.desc()).all()
     results = Result.query.filter_by(user_id=session['user_id']).all()
-    return render_template('user/user_dashboard.html', username=session['username'], quizzes=upcoming_quizzes, results=results)
+    return render_template('user/user_dashboard.html', username=session['username'], quizzes=upcoming_quizzes, results=results, past_quizzes=past_quizzes)
 
 
-@user_blueprint.route('/scores' , methods=['GET', 'POST'])
+@user_blueprint.route('/scores')
 def scores():
     if 'user_id' not in session:
         return redirect(url_for('auth.user_login'))
 
-    if request.method == 'POST':
-        # Save scores
-        pass
-
-    return render_template('user/scores.html')
+    scores = Result.query.filter_by(user_id=session['user_id']).all()
+    return render_template('user/scores.html', scores=scores)
 
 @user_blueprint.route('/summary' , methods=['GET', 'POST'])
 def summary():
     if 'user_id' not in session:
         return redirect(url_for('auth.user_login'))
 
-    if request.method == 'POST':
-        # Save summary
-        pass
+    # Generate bar chart for Subject Wise No. of Quizzes
+    subjects = list(Subject.query.with_entities(Subject.name).all())
+    no_of_quizzes = list(Subject.query.with_entities(Subject.quizzes).all())
+
+    plt.figure(figsize=(8, 8))
+    plt.bar(subjects, no_of_quizzes, color='skyblue')
+    plt.xlabel('Subjects')
+    plt.ylabel('No. of Quizzes')
+    plt.title('Subject Wise No. of Quizzes')
+    bar_chart_path = os.path.join('static', 'images', 'subject_chart.png')
+    plt.savefig(bar_chart_path)
+    plt.close()
+    
+
+    # Generate pie chart for Subject Wise User Attempts
+    quizzes = ['Quiz 1', 'Quiz 2', 'Quiz 3', 'Quiz 4']
+    scores = [85, 90, 75, 80]
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(scores, labels=quizzes, autopct='%1.1f%%', startangle=140)
+    plt.title('Quiz Wise Score')
+    pie_chart_path = os.path.join('static', 'images', 'quiz_chart.png')
+    plt.savefig(pie_chart_path)
+    plt.close()
 
     return render_template('user/summary.html')
 

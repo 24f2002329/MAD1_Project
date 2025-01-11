@@ -2,7 +2,7 @@
 {% block content %}
 <section class="vh-90 content">
     <div class="container text-center">
-        <h1>Upcoming Quizzes</h1>
+        <h1 class="my-4">Upcoming Quizzes</h1>
         {% if quizzes %}
             <table class="table table-striped table-bordered">
                 <thead>
@@ -38,6 +38,39 @@
             </table>
         {% else %}
             <p>No upcoming quizzes.</p>
+        {% endif %}
+    </div>
+    <div class="container text-center">
+        <h1 class="my-4">Past Quizzes</h1>
+        {% if past_quizzes %}
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Quiz ID</th>
+                        <th scope="col">Chapter</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz in past_quizzes %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ quiz.id }}</td>
+                        <td>{{ quiz.chapter.name }} ({{ quiz.chapter.subject.name }})</td>
+                        <td>{{ quiz.quiz_date.strftime('%d-%B-%Y') }}</td>
+                        <td>{{ quiz.duration }} minutes</td>
+                        <td>
+                            <a href="{{ url_for('user.quiz_score', quiz_id=quiz.id) }}" class="btn btn-success">View Score</a>
+                        </td>
+                    </tr>
+                    {% endfor %} 
+                </tbody>
+            </table>
+        {% else %}
+            <p>No past quizzes.</p>
         {% endif %}
     </div>
 </section>
