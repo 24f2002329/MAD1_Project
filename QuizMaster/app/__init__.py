@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from flask_migrate import Migrate
 from datetime import timedelta
+from .filters import register_filters
 import os   
 
 
 app = Flask(__name__)
+register_filters(app)
 
 db = SQLAlchemy()
 migrate = Migrate()

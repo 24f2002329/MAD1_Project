@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="vh-90 content">
+    <div class="container my-5">
+        <div class="shadow-lg p-4">
+            <h1 class="text-center">Quiz {{quiz.id}} Summary</h1>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4>Quiz ID: {{ quiz.id }}</h4>
+                    <h4>Chapter: {{ quiz.chapter.name }} ({{ quiz.chapter.subject.name }})</h4>
+                    <h4>Quiz Date: {{ quiz.quiz_date.strftime('%d-%B-%Y') }}</h4>
+                    <h4>Duration: {{ quiz.duration }} minutes</h4>
+                </div>
+                <div>
+                    <h4>Score: {{ result.score }}/{{ result.total_marks_quiz }}</h4>
+                    <h4>Percentage: {{ ((result.score / result.total_marks_quiz) * 100) | round(2) }}%</h4>
+                </div>
+            </div>
+            <hr>
+            <h3>Questions</h3>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Question</th>
+                        <th scope="col">Correct Answer</th>
+                        <th scope="col">Your Answer</th>
+                        <th scope="col">Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in quiz_data %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ data.question.text }}</td>
+                        <td>{{ data.question.correct_options }}</td>
+                        <td>{{ (data.answers).replace("option","") }}</td>
+                        {% set correct_options = data.question.correct_options|to_set %}
+                        {% set user_answers = (data.answers).replace("option","")|to_set %}
+                        {% if correct_options == user_answers %}
+                            <td>{{ data.question.marks }}</td>
+                        {% elif correct_options.issubset(user_answers) %}
+                            <td>{{ data.question.marks / correct_options|length }}</td>
+                        {% elif user_answers not in correct_options %}
+                            <td>-1</td>
+                        {% else %}
+                            <td>0</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+            <div class="text-center">
+            <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

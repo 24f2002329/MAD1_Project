@@ -99,6 +99,28 @@ def view_quiz(quiz_id):
 
 
 
+@user_blueprint.route('quiz_score/<int:quiz_id>')
+def quiz_score(quiz_id):
+    quiz = Quiz.query.get(quiz_id)
+    if not quiz:
+        flash('Quiz not found!', 'error')
+        return redirect(url_for('user.dashboard'))
+    
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('You must be logged in to view quiz scores.', 'error')
+        return redirect(url_for('auth.user_login'))
+    
+    result = Result.query.filter_by(user_id=user_id, quiz_id=quiz_id).first()
+    if not result:
+        flash('Quiz not attempted yet.', 'error')
+        return redirect(url_for('user.dashboard'))
+    
+    quiz_data = QuizAttempt.query.filter_by(user_id=user_id, quiz_id=quiz_id).all()
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
+
+    return render_template('user/quiz_score.html', quiz=quiz, result=result, quiz_data=quiz_data, questions=questions)
+
 
 # Save response route for "Save and Next"
 @user_blueprint.route('/save_response', methods=['POST'])
@@ -175,13 +197,19 @@ def attempt_quiz(quiz_id):
         wrong_answers = 0
         attempted_questions = 0
         total_score = 0
+        partially_correct_answers = 0
+        total_marks_quiz = 0
 
         for question in questions:
+            total_marks_quiz += question.marks
             question_id = question.id
             attempt = QuizAttempt.query.filter_by(user_id=user_id, quiz_id=quiz_id, question_id=question_id).first()
-            if attempt:
+            if attempt and attempt.answers:
                 attempted_questions += 1
                 selected_answers = attempt.answers.split(',')
+                for i,x in enumerate(selected_answers):
+                    option = x.replace("option", "")
+                    selected_answers[i] = option
                 correct_options = question.correct_options.split(',')
 
                 if set(selected_answers) == set(correct_options):
@@ -191,6 +219,7 @@ def attempt_quiz(quiz_id):
                     pass
                 # Partial marking for partially correct answers
                 elif set(selected_answers).issubset(set(correct_options)):
+                    partially_correct_answers += 1
                     partial_score = (question.marks / len(correct_options)) * len(set(selected_answers))
                     total_score += partial_score  # Award partial marks based on the number of correct options selected
                 else:
@@ -207,18 +236,17 @@ def attempt_quiz(quiz_id):
             total_questions=total_questions,
             attempted_questions=attempted_questions,
             correct_answers=correct_answers,
+            partially_correct_answers=partially_correct_answers,
             wrong_answers=wrong_answers,
             skipped_questions=skipped_questions,
-            created_at=datetime.now()
+            created_at=datetime.now(),
+            total_marks_quiz = total_marks_quiz
         )
         db.session.add(result)
-
-        # Mark quiz as attempted
-        quiz.status = 'attempted'
         db.session.commit()
 
         flash('Quiz submitted successfully!', 'success')
-        return redirect(url_for('user.dashboard'))
+        return redirect(url_for('user.quiz_score', quiz_id=quiz_id))
 
     current_question_index = 0  # Initialize the current question index
 
@@ -237,15 +265,6 @@ def attempt_quiz(quiz_id):
         for question in questions
     ]
     return render_template('user/attempt_quiz.html', quiz=quiz, questions=serialized_questions, current_question_index=current_question_index)
-
-
-
-
-
-
-
-
-
 
 
 
