@@ -26,7 +26,8 @@
                         <td>
                             <a href="{{ url_for('user.view_quiz', quiz_id=quiz.id) }}" class="btn btn-warning my-2 mx-2">View</a>
                             <!-- <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-success">Start</a> -->
-                            {% if results %}
+                            {% set result = results | selectattr('quiz_id', 'equalto', quiz.id) | list %}
+                            {% if result %}
                                 <a href="{{ url_for('user.quiz_score', quiz_id=quiz.id )}}" class="text-dark btn btn-success">Attempted</a>
                             {% else %}
                                 <a href="{{ url_for('user.instructions', quiz_id=quiz.id) }}" class="btn btn-primary">Start Quiz</a>

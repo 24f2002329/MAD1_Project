@@ -56,11 +56,11 @@ class Question(db.Model):
     correct_options = db.Column(db.String(200), nullable=False)
     marks = db.Column(db.Integer, nullable=False, default=4)
     negative_marks = db.Column(db.Integer, nullable=False, default=0)
-    question_image = db.Column(db.String(200), nullable=True)
-    option1_image = db.Column(db.String(200), nullable=True)
-    option2_image = db.Column(db.String(200), nullable=True)
-    option3_image = db.Column(db.String(200), nullable=True)
-    option4_image = db.Column(db.String(200), nullable=True)
+    question_image = db.Column(db.String(200), nullable=True, default="")
+    option1_image = db.Column(db.String(200), nullable=True, default="")
+    option2_image = db.Column(db.String(200), nullable=True, default="")
+    option3_image = db.Column(db.String(200), nullable=True, default="")
+    option4_image = db.Column(db.String(200), nullable=True, default="")
 
 
 

@@ -42,7 +42,7 @@
                             <td>{{ data.question.marks }}</td>
                         {% elif correct_options.issubset(user_answers) %}
                             <td>{{ data.question.marks / correct_options|length }}</td>
-                        {% elif user_answers not in correct_options %}
+                        {% elif (user_answers not in correct_options) and user_answers != "" %}
                             <td>-1</td>
                         {% else %}
                             <td>0</td>

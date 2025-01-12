@@ -301,7 +301,7 @@ def add_question(quiz_id):
                 filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], custom_filename)
                 file.save(filepath)
                 return custom_filename
-            return None
+            return ""
 
         question_image_path = save_image(request.files['question_image'], f'Q{quiz_id}-QID{question.id}-question')
         option1_image_path = save_image(request.files['option1_image'], 'Q{quiz_id}-QID{question.id}-option1')

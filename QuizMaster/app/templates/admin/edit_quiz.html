@@ -18,7 +18,7 @@
                                 <input type="number" id="quiz_duration" name="quiz_duration" class="form-control form-control-lg bg-light" value="{{ quiz.duration }}" required />
                             </div>
                             <div class="form-outline mb-4">
-                                <label for="chapter">Chapter:</label>
+                                <label for="chapter">Chapter [Current : ]:</label>
                                 <select class="form-control" id="chapter" name="chapter" required>
                                     {% for chapter in chapters %}
                                         <option value="{{ chapter.name }}">{{ chapter.name }}</option>
