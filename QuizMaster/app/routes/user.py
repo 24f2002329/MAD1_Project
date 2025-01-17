@@ -19,10 +19,11 @@ def index():
 def dashboard():
     if 'user_id' not in session or session['user_id'] == 0:
         return render_template('index.html')
-    upcoming_quizzes = Quiz.query.filter(Quiz.quiz_date >= datetime.today()).order_by(Quiz.quiz_date).all()
-    past_quizzes = Quiz.query.filter(Quiz.quiz_date < datetime.today()).order_by(Quiz.quiz_date.desc()).all()
+    upcoming_quizzes = Quiz.query.filter(Quiz.quiz_endtime >= datetime.today()).order_by(Quiz.quiz_date).all()
+    past_quizzes = Quiz.query.filter(Quiz.quiz_endtime < datetime.today()).order_by(Quiz.quiz_date.desc()).all()
     results = Result.query.filter_by(user_id=session['user_id']).all()
-    return render_template('user/user_dashboard.html', username=session['username'], quizzes=upcoming_quizzes, results=results, past_quizzes=past_quizzes)
+    now = datetime.now()
+    return render_template('user/user_dashboard.html', username=session['username'], quizzes=upcoming_quizzes, results=results, past_quizzes=past_quizzes, now=now)
 
 
 @user_blueprint.route('/scores')
@@ -298,3 +299,29 @@ def instructions(quiz_id):
         flash('Quiz not found!', 'error')
         return redirect(url_for('user.dashboard'))
     return render_template('user/instructions.html', quiz=quiz)
+
+
+
+
+@user_blueprint.route('/save_timer', methods=['POST'])
+def save_timer():
+    data = request.get_json()
+    remaining_time = data.get('remainingTime')
+    user_id = session.get('user_id')  # Assuming you have user sessions
+
+    if user_id:
+        timer_db[user_id] = {
+            'remaining_time': remaining_time,
+            'timestamp': datetime.utcnow()
+        }
+        return jsonify({'status': 'success'}), 200
+    return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
+
+@user_blueprint.route('/get_timer', methods=['GET'])
+def get_timer():
+    user_id = session.get('user_id')  # Assuming you have user sessions
+
+    if user_id and user_id in timer_db:
+        timer_data = timer_db[user_id]
+        return jsonify({'remainingTime': timer_data['remaining_time']}), 200
+    return jsonify({'remainingTime': None}), 200

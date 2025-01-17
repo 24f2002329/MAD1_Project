@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, redirect, current_app
 import os
 from app.models.models import *
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
@@ -120,7 +120,7 @@ def edit_chapter(chapter_id):
 
     chapter = Chapter.query.get_or_404(chapter_id)  # Fetch full chapter object
     if request.method == 'POST':
-        chapter.name = request.form['chapter']  # Updated to match template form input
+        chapter.name = request.form['chapter_name'] 
         db.session.commit()
         flash('Chapter updated successfully.', 'success')
         return redirect(url_for('admin.dashboard', subject_id=chapter.subject_id))
@@ -175,19 +175,31 @@ def create_quiz():
         return "Unauthorized", 403
 
     if request.method == 'POST':
-        quiz_date = request.form['quiz_date']
-
-        # Convert quiz_date to datetime object
-        try:
-            quiz_date = datetime.strptime(quiz_date, '%Y-%m-%d').date()
-        except ValueError:
-            flash('Invalid date format!', 'error')
-            return redirect(url_for('admin.create_quiz', chapter_id=chapter_id))
+        quiz_date = request.form['quiz_datetime']
+        quiz_endtime = request.form['quiz_endtime']
 
         chapter = request.form['chapter']
         duration = request.form['quiz_duration']
         chapter_id = Chapter.query.filter_by(name=chapter).first().id
-        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration)
+
+        # Convert quiz_date to datetime object
+        try:
+            quiz_date = datetime.strptime(quiz_date, '%Y-%m-%dT%H:%M')
+        except ValueError as e:
+            flash(f'Invalid date and time format! Error: {e}', 'error')
+            return redirect(url_for('admin.create_quiz', chapter_id=chapter_id))
+        
+        # Convert quiz_endtime to datetime object
+        try:
+            if quiz_endtime:
+                quiz_endtime = datetime.strptime(quiz_endtime, '%Y-%m-%dT%H:%M')
+            else:
+                quiz_endtime = quiz_date + timedelta(minutes=int(duration))
+        except ValueError as e:
+            flash(f'Invalid date and time format! Error: {e}', 'error')
+            return redirect(url_for('admin.create_quiz', chapter_id=chapter_id))
+
+        quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration, quiz_endtime=quiz_endtime)
         db.session.add(quiz)
         db.session.commit()
         flash('Quiz added successfully.', 'success')
@@ -205,16 +217,28 @@ def add_quiz(chapter_id):
 
     if request.method == 'POST':
         quiz_date = request.form['quiz_date']
+        quiz_endtime = request.form['quiz_endtime']
+
+        duration = request.form['quiz_duration']
+        quiz_chapter = Chapter.query.filter_by(id=chapter_id).first().name
 
         # Convert quiz_date to datetime object
         try:
-            quiz_date = datetime.strptime(quiz_date, '%Y-%m-%d').date()
+            quiz_date = datetime.strptime(quiz_date, '%Y-%m-%dT%H:%M').date()
+        except ValueError:
+            flash('Invalid date format!', 'error')
+            return redirect(url_for('admin.add_quiz', chapter_id=chapter_id))
+        
+        # Convert quiz_endtime to datetime object
+        try:
+            if quiz_endtime:
+                quiz_endtime = datetime.strptime(quiz_endtime, '%Y-%m-%dT%H:%M')
+            else:
+                quiz_endtime = quiz_date + timedelta(minutes=int(duration))
         except ValueError:
             flash('Invalid date format!', 'error')
             return redirect(url_for('admin.add_quiz', chapter_id=chapter_id))
 
-        duration = request.form['quiz_duration']
-        quiz_chapter = Chapter.query.filter_by(id=chapter_id).first().name
         quiz = Quiz(quiz_date=quiz_date, chapter_id=chapter_id, duration=duration)
         db.session.add(quiz)
         db.session.commit()
@@ -253,8 +277,9 @@ def edit_quiz(quiz_id):
         quiz.chapter_id = Chapter.query.filter_by(name=chapter).first().id
         db.session.commit()
         flash('Quiz updated successfully.', 'success')
-        return redirect(url_for('admin.edit_chapter', chapter_id=quiz.chapter_id))
-    chapters = Chapter.query.all() 
+        return redirect(url_for('admin.edit_chapter', chapter_id=quiz.chapter_id)) 
+    subject = Subject.query.filter_by(id=quiz.chapter.subject_id).first()
+    chapters = Chapter.query.filter_by(subject_id=subject.id).all()
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
     return render_template('admin/edit_quiz.html', quiz=quiz, chapters=chapters, questions=questions)
 
@@ -369,7 +394,7 @@ def edit_subject(subject_id):
 
     subject = Subject.query.get_or_404(subject_id)  # Fetch full subject object
     if request.method == 'POST':
-        subject.name = request.form['subject_name']  # Updated to match template form input
+        subject.name = request.form['subject_name'] 
         subject.desc = request.form['subject_desc']
         db.session.commit() # Save changes to the database
         flash('Subject updated successfully.', 'success')
